@@ -447,3 +447,26 @@ class Square {
   ...
 }
 ```
+
+## Clases abstractas
+
+Una clase abstracta es aquella que no puede ser instanciada para crear objetos, su objetivo principal es crear una plantilla o una base para otras clases que hereden de ella, son muy útiles para abstraer la arquitectura de la aplicación y crear capas de profundidad.
+
+```dart
+// Tipos espécíficos de tipos de plantas de energía
+enum PlantType { nuclear, wind, water }
+
+// Clase abstracta
+abstract class EnergyPlant {
+  double energyLeft;
+  PlantType type;
+
+  EnergyPlant({
+    required this.energyLeft,
+    required this.type,
+  });
+
+  // Se crean métodos sin implementarlos
+  void consumeEnergy(double amount);
+}
+```
