@@ -385,3 +385,46 @@ final Hero thor = Hero.fromJson(rawJson);
 // -> Thor, Truenos, isAlive: Siuu 
 ```
 
+### Getters y Setters
+
+Los getters y los setters son una funcionalidad bien útil porque ayudan a que se puedan mantener todas las propiedades privadas y que así no sean accesibles desde fuera, mejorando la seguridad de los datos, y que la única forma de interactuar con las propiedades sea a través de estos métodos get y set.
+
+Para hacer privado un atributo, el nombre de la variable deberá empezar con un guión bajo.
+
+```dart
+class Square {
+  // Propiedades
+  double _side;
+
+  // Constructor principal
+  Square({required double side}) : _side = side;
+
+  // Getter
+  double get area {
+    return _side * _side;
+  }
+
+  // Setter
+  set side(double value) {
+    print('Nuevo valor: $value');
+    if (value < 0) throw 'Value must be >= 0';
+    _side = value;
+  }
+
+  // Método (reemplazado por el getter)
+  double calculateArea() {
+    return _side * _side;
+  }
+}
+```
+Nótese que en el código anterior la propiedad side es privada, y que hay un método getter encargado de realizar el cálculo del área de un cuadrado, y un setter encargado de establecer un valor a `_side` y de comprobar si es un valor mayor a 0.
+
+```dart
+void main() {
+  // Se crea un objeto Square con valor 15 de lado
+  final Square mySquare = Square(side: 15);
+  // El lado del cuadrado es cambiado por 5
+  mySquare.side = 5; // -> El setter se encarga de reemplazar el 15 por 5
+  print('Area: ${mySquare.area}'); // -> El getter devuelve 25
+}
+```
