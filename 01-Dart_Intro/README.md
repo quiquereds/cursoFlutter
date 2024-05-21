@@ -229,3 +229,63 @@ var Set numbers = {1,2,3,4,5,6,7,8}
 
 > [!TIP]
 > Los sets pueden resultar útiles a la hora de limpiar listas con valores duplicados.
+
+## Funciones
+
+Las funciones y los parámetros pueden entenderse como las distintas formas que existen para enviar y utilizar valores.
+
+```dart
+// Función principal
+void main() {
+  // Llamamos a la función de saludo
+  print(greatEveryone()); // -> ¡Hola a todos!
+}
+
+// Función de saludo
+String greatEveryone() {
+  // Devolvemos el saludo
+  return '¡Hola a todos!'
+}
+```
+> [!TIP]
+> Dart también maneja los *lambda functions* o funciones de flecha, donde, si no hay cuerpo de la función, en lugar de usar llaves, se puede usar la flecha gorda `=>` seguida del retorno.
+
+### Funciones con parámetros
+
+Las funciones se pueden crear recibiendo parámetros, o mejor dicho, información útil que ayuden al manejo o cálculo de los datos, como lo siguiente:
+
+```dart
+// Función principal
+void main(){
+  // Enviamos a(20) y b(10) a la función
+  addTwoNumbers(20,10); // -> 30
+}
+
+/// Función de suma de dos números
+/// recibimos a y b de parámetros
+int addTwoNumbers(int a, int b){
+  // Devolvemos la suma de a + b
+  return a + b;
+}
+```
+
+### Funciones con parámetros opcionales
+
+Se pueden crear funciones que tengan parámetros opcionales, para ello, el parámetro que se desea poner opcional se envuelve en corchetes y  se le establece un valor inicial.
+
+```dart
+// Función principal
+void main(){
+  // Enviamos solo a
+  addTwoNumbers(20); // -> 20 + 0(b nulo) = 30
+  // Enviamos a y b
+  addTwoNumbers(20, 10) // 20 + 10 = 30
+}
+
+int addTwoNumbers(int a, [int b = 0]) {
+  /// Si b es nulo, la operación sería a + 0, en
+  /// cambio, si b tiene valor se hace válida
+  /// la operación a + b.
+  return a + b;
+}
+```
