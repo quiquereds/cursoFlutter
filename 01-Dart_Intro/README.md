@@ -605,3 +605,8 @@ Future<String> httpGet(String url) {
 ```
 
 Se utiliza la palabra reservada `async` para indicarle a Dart que se va a transformar una función en un Future (asíncrona), y la palabra reservada `await` para esperar el resultado de un Future como si fuese una tarea síncrona.
+
+## Streams
+
+Los streams proporcionan una secuencia asíncrona de datos, pueden ser retornados y son usados como objetos, funciones o métodos que representan un flujo de información que puede estar emitiendo valores periódicamente, una única vez o nunca.
+
