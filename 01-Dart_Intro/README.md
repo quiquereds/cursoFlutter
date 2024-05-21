@@ -218,3 +218,14 @@ En una consulta más compleja donde se desee extraer la URL del back sprite del 
 ```dart
 print(pokemon['sprite']['back']) // -> https://raw.git...
 ```
+
+### Set
+Los sets pueden entenderse como un tipo de lista, pero la principal diferencia es que dentro de este tipo de datos, los valores son únicos, es decir, no puede incluir ningún elemento repetido.
+
+```dart
+var Set numbers = {1,2,3,4,5,6,7,8} 
+// No hay elementos repetidos
+```
+
+> [!TIP]
+> Los sets pueden resultar útiles a la hora de limpiar listas con valores duplicados.
