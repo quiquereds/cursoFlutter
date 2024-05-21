@@ -1,8 +1,12 @@
 void main() {
-  print(greatEveryone()); // Llamamos a la función de saludo
-  print(addTwoNumbers(10, 20)); // Llamamos a la función de suma enviando a + b
-  print(addTwoNumbersOptional(
-      10)); // Llamamos a la función de suma pero solo con un parámetro
+  // Llamamos a la función de saludo
+  print(greatEveryone());
+  // Llamamos a la función de suma enviando a + b
+  print(addTwoNumbers(10, 20));
+  // Llamamos a la función de suma pero solo con un parámetro
+  print(addTwoNumbersOptional(10));
+  // Llamamos a la función de saludo que tiene parámetro por nombre
+  print(greetPerson(name: 'Quique Rojas'));
 }
 
 // Función de saludo
@@ -24,4 +28,9 @@ int addTwoNumbersOptional(int a, [int b = 0]) {
   /// cambio, si b tiene valor se hace válida
   /// la operación a + b.
   return a + b;
+}
+
+// Función de parámetros opcionales y por nombre
+String greetPerson({required String name, String message = 'Hola'}) {
+  return '$message, $name';
 }

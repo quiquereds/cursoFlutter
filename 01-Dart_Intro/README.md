@@ -289,3 +289,24 @@ int addTwoNumbers(int a, [int b = 0]) {
   return a + b;
 }
 ```
+
+### Funciones con parámetros con nombre
+
+Hasta el momento, se han utilizado parámetros obligatorios y posicionales, sin embargo, Dart ofrece una manera especial de ponerle nombre a los parámetros que se envían para mejorar la comprensión de las funciones y para ayudar a asegurar que se pasen los parámetros correctos.
+
+Para ello, se colocan entre llaves y dentro del paréntesis los parámetros que recibe una función, de la siguiente manera:
+
+```dart
+// Función principal
+void main(){
+  // Llamamos a la función de saludo
+  greetEveyone(name: 'Quique Rojas'); // -> Hola Quique Rojas
+}
+
+/// La palabra reservada ´required´ obliga a que siempre se debe pasar ese parámetro
+String greetEveryone({required String name, String message = 'Hola'}) {
+  return '$message $name';
+}
+```
+> [!NOTE]
+> Al llamar a la función, también se puede sobreescribir `message`, representa un tipo de parámetro opcional (debido a que se le asigna un valor por defecto), pero se puede pasar otro mensaje al llamar a la función.
