@@ -578,3 +578,28 @@ class Murcielago extends Mamifero with Volador, Caminante {}
 > [!TIP]
 > Cada que en una clase se utiliza la palabra `with` por lo regular se asocia a que se están utilizando mixins.
 
+## Future
+
+Los Futures representan el resultado de una operación asíncrona, es una promesa de que pronto existirá un valor, sin embargo, hay escenarios donde la promesa puede fallar y se tiene que realizar el manejo de excepciones
+
+```dart
+void main() {
+  httpGet('https://helloworld.com').then((value) {
+    // Si la promesa es exitosa se retorna el resultado del Future
+    print(value);
+  }).catchError((err) {
+    // Si la promesa no se cumple, se retorna el error
+    print('Error: $err');
+  });
+}
+
+Future<String> httpGet(String url) {
+  // Se hace una simulación de una petición http
+  return Future.delayed(const Duration(seconds: 1), () {
+    // Si la petición falla, se maneja el error
+    throw 'Error en la petición http';
+
+    //     return 'Respuesta de la petición http';
+  });
+}
+```
