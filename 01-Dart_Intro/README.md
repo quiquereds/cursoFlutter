@@ -543,3 +543,38 @@ void main() {
   print('Nuclear: ${chargePhone(nuclearPlant)}'); // -> 990
 }
 ```
+
+## Mixins
+
+Los mixins representan una propiedad que tiene Flutter y Dart que permiten agregarle un nivel de especialidad a las clases, esto con el proposito de evitar estar heredando o implementando muchas cosas.
+
+```dart
+// Creamos la clase global
+abstract class Animal {}
+
+// Creamos 3 clases hijas englobando a tipos de animales
+abstract class Mamifero extends Animal {}
+
+abstract class Ave extends Animal {}
+
+abstract class Pez extends Animal {}
+
+// Creamos las especializaciones con los mixins
+mixin Volador {
+  void volar() => print('Estoy volando');
+}
+mixin Caminante {
+  void caminar() => print('Estoy caminando');
+}
+mixin Nadador {
+  void nadar() => print('Estoy nadando');
+}
+
+// Creamos animales para cada tipo con su especialización
+class Delfin extends Mamifero with Nadador {}
+
+class Murcielago extends Mamifero with Volador, Caminante {}
+```
+> [!TIP]
+> Cada que en una clase se utiliza la palabra `with` por lo regular se asocia a que se están utilizando mixins.
+
