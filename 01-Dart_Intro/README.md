@@ -355,3 +355,33 @@ String toString() {
 }
 ```
 
+### Constructores con nombre
+
+En Dart se pueden crear constructores por nombre que ayuden a crear o inicializar un objeto de diversas formas, por ejemplo, si se hace una petición HTTP, comúnmente se nos regresa la respuesta en forma de JSON el cual no podemos utilizar así nada más para crear un objeto, entonces, es necesario tener un constructor que extraiga la información que queremos del JSON y la pase a objeto.
+
+```dart
+// Ejemplo de respuesta HTTP
+  final Map<String, dynamic> rawJson = {
+    'name': 'Thor',
+    'power': 'Truenos',
+    'isAlive': true,
+  };
+```
+Para pasar este tipo de dato a un objeto, debemos contar con un constructor dentro de la clase que lo pase a objeto:
+
+```dart
+// Constructor por nombre
+  Hero.fromJson(Map<String, dynamic> json)
+      : name = json['name'] ?? 'No name found',
+        power = json['power'] ?? 'No power found',
+        isAlive = json['isAlive'] ?? 'Not found';
+```
+
+Con esto, dentro de nuestra función principal podremos pasar `rawJson` a un objeto `Hero` utilizando el constructor `Hero.fromJson`:
+
+```dart
+// Creamos un objeto a partir del JSON simulado
+final Hero thor = Hero.fromJson(rawJson);
+// -> Thor, Truenos, isAlive: Siuu 
+```
+
