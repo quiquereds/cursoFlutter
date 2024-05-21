@@ -310,3 +310,32 @@ String greetEveryone({required String name, String message = 'Hola'}) {
 ```
 > [!NOTE]
 > Al llamar a la función, también se puede sobreescribir `message`, representa un tipo de parámetro opcional (debido a que se le asigna un valor por defecto), pero se puede pasar otro mensaje al llamar a la función.
+
+## Clases
+
+Las clases son como un molde para hacer galletas, representan un concepto sumamente vinculado a la Programación Orientada a Objetos, y que ayudan, a crear tantos objetos o galletas a partir de este molde dentro de un programa.
+
+Dentro de una clase se encuentran atributos (propiedades) y métodos (funciones), así como otros elementos de ayuda como constructores, getters y setters que ayudan a obtener información, inicializar un objeto o modificar un objeto de manera segura.
+
+Un constructor hace referencia a una función encargada de inicializar objetos.
+
+```dart
+void main() {
+  // Creamos un objeto a partir del molde Hero
+  final Hero wolverine = Hero(name: 'Logan', power: 'Regeneración');
+  print(wolverine);
+  // Accedemos a las propiedades
+  print(wolverine.name); // -> Logan
+  print(wolverine.power); // -> Regeneración
+}
+
+class Hero {
+  // Atributos
+  String name;
+  String power;
+
+  // Inicialización de clase (constructor)
+  Hero({required this.name, required this.power});
+}
+
+```
