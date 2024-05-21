@@ -428,3 +428,22 @@ void main() {
   print('Area: ${mySquare.area}'); // -> El getter devuelve 25
 }
 ```
+
+### Aserciones
+
+Hasta el momento todo marcha bien, sin embargo, en el código anterior cuando se crea el objeto `mySquare` dentro del constructor para inicializar el objeto, no hay ninguna regla de negocio para válidar que el lado sea un número mayor a 0, esto indica que se puede colar un número negativo a la operación. Precisamente para esto son las aserciones, las cuales son reglas de negocio para que se cumplan ciertas reglas establecidas.
+
+```dart
+class Square {
+  ...
+
+  // Constructor principal
+  Square({required double side})
+      // Creamos una aserción
+      : assert(side >= 0, 'El lado debe ser mayor a 0'),
+        // Si esta condición se cumple, se establece side
+        _side = side;
+
+  ...
+}
+```
