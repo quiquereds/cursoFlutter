@@ -512,3 +512,34 @@ void main() {
 }
 ```
 
+### Implements
+
+La otra forma de trabajar con las clases abstractas es con la implementación, a pesar de que puede servir para lo mismo que la herencia o *extends*, realmente la diferencia rádica en que de esta forma se puede controlar cada uno de los overrides y además permite que se puedan implementar cosas específicas de la clase padre en lugar de extender todo lo de la clase padre.
+
+```dart
+// Implementación de la clase padre
+class NuclearPlant implements EnergyPlant {
+  @override
+  double energyLeft;
+
+  @override
+  final PlantType type = PlantType.nuclear;
+
+  NuclearPlant({required this.energyLeft});
+
+  @override
+  void consumeEnergy(double amount) {
+    energyLeft -= (amount * 0.5);
+  }
+}
+```
+
+Se pueden crear objetos de esta clase y utilizarlos en la función `chargePhone` sin ningún problema.
+
+
+```dart
+void main() {
+  final nuclearPlant = NuclearPlant(energyLeft: 1000);
+  print('Nuclear: ${chargePhone(nuclearPlant)}'); // -> 990
+}
+```
