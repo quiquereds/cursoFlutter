@@ -470,3 +470,45 @@ abstract class EnergyPlant {
   void consumeEnergy(double amount);
 }
 ```
+
+### Extends
+
+Las clases abstractas funcionan como plantillas para otras clases, y la primer manera de cómo podemos utilizarlas para crear otras clases es con la propiedad `Extends`, que involucra que la clase hija van a heredar los mismos atributos y métodos que el padre.
+
+```dart
+// Creamos WindPlan extendiendo de EnergyPlant (abstracta)
+class WindPlant extends EnergyPlant {
+  // Creamos un constructor solicitando la energía inicial
+  WindPlant({required double initialEnergy})
+      // Satisfacemos el requerimiento de heredar las propiedades
+      : super(energyLeft: initialEnergy, type: PlantType.wind);
+
+  // Se heredan los métodos
+  @override
+  void consumeEnergy(double amount) {
+    energyLeft -= amount;
+  }
+}
+```
+
+Esto además de facilitar la abstracción en la arquitectura de la aplicación, abre la puerta a que en las funciones, se reciba como parámetro a la clase padre y por defecto va a recibir a todas las clases hijas como ese parámetro ya que tienen la misma información que la clase padre.
+
+```dart
+// Creamos una función que recibe a la clase padre como parámetro
+double chargePhone(EnergyPlant plant) {
+  if (plant.energyLeft < 10) {
+    throw Exception('Not enough energy');
+  }
+  // Restamos 10 watts por el consumo de energía.
+  return plant.energyLeft - 10;
+}
+
+void main() {
+  // Creamos una planta eólica (objeto) indicando el parámetro necesario para esa clase
+  final windPlant = WindPlant(initialEnergy: 9);
+  /// Utilizamos la función chargePlant pasando el objeto tipo WindPlant
+  /// el cual es compatible con EnergyPlant porque hereda de esta.
+  print('Wind: ${chargePhone(windPlant)}'); // -> Not enough energy
+}
+```
+
