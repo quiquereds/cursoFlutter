@@ -339,3 +339,19 @@ class Hero {
 }
 
 ```
+> [!TIP]
+> Si se desea tener un atributo opcional, dentro del constructor se elimina la palabra `required` y se asigna un valor inicial al atributo que será opcional.
+>
+
+### @override
+
+La anotación *override* ayuda a sobreescribir el comportamiento de métodos, un ejemplo muy claro de su utilidad es cuando se desea mostrar las propiedades de un objeto sin la necesidad de acceder directamente a cada uno de ellos, ya que al utilizar el método `toString`, únicamente devolverá una instancia del objeto sin revelar su información.
+
+```dart
+// Sobreescribimos el comportamiento del método toString
+@override
+String toString() {
+  return '$name - $power';
+}
+```
+
