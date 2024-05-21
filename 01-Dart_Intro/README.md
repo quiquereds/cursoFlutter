@@ -603,3 +603,5 @@ Future<String> httpGet(String url) {
   });
 }
 ```
+
+Se utiliza la palabra reservada `async` para indicarle a Dart que se va a transformar una función en un Future (asíncrona), y la palabra reservada `await` para esperar el resultado de un Future como si fuese una tarea síncrona.

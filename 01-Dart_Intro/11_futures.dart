@@ -1,23 +1,19 @@
-void main() {
+void main() async {
   print('Inicio del programa');
 
-  httpGet('https://helloworld.com').then((value) {
-    // Si la promesa es exitosa se retorna el resultado del Future
+  try {
+    final value = await httpGet('https://helloworld.com');
     print(value);
-  }).catchError((err) {
-    // Si la promesa no se cumple, se retorna el error
-    print('Error: $err');
-  });
+  } catch (err) {
+    print('Tenemos un error');
+  }
 
   print('Fin del programa');
 }
 
-Future<String> httpGet(String url) {
-  // Se hace una simulación de una petición http
-  return Future.delayed(const Duration(seconds: 1), () {
-    // Si la petición falla, se maneja el error
-    throw 'Error en la petición http';
-
-    //     return 'Respuesta de la petición http';
-  });
+Future<String> httpGet(String url) async {
+  // Esperamos a que se cumpla el Future
+  await Future.delayed(const Duration(seconds: 1));
+  // Regresa el valor
+  return 'Valor HTTP';
 }
