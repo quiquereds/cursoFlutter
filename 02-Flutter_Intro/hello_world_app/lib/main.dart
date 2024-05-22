@@ -8,6 +8,7 @@ void main() {
 
 // Widget inicial
 class MyApp extends StatelessWidget {
+  // Inicialización
   const MyApp({super.key});
 
   @override
@@ -15,8 +16,17 @@ class MyApp extends StatelessWidget {
     // Devolvemos widget hijo
     return const Placeholder(
       child: MaterialApp(
-        home: Center(
-          child: Text('Hola mundo'),
+        // Quita el banner de debug en el UI de la app
+        debugShowCheckedModeBanner: false,
+
+        /// El Scaffold implementa un diseño básico de app y da las
+        /// bases para colocar más elementos de UI
+        home: Scaffold(
+          /// El Center centra todo el contenido de los hijos en su
+          /// espacio disponible.
+          body: Center(
+            child: Text('Hola Mundo'),
+          ),
         ),
       ),
     );
