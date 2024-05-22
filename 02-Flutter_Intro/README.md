@@ -56,3 +56,44 @@ El analyzer se encarga de la revisión de todo el código de Dart, mostrar adver
 El archivo `pubspec.lock` permite al desarrollador darle seguimiento a las versiones de los paquetes que está utilizando nuestra aplicación. No se configura manualmente.
 
 Por otro lado `pubspec.yaml` si es un archivo muy importante, ya que es de propia configuración de la aplicación, dentro se puede configurar aspectos  como el nombre del proyecto, descripción, versiones, dependencias, dependencias de desarrollo, estilos de diseño y los recursos de la aplicación (imágenes, iconos, fuentes, etc).
+
+## Trabajando en Flutter
+
+Toda aplicación de Flutter, al igual que con Dart, ejecuta su función principal `void main() {}`, pero adicional a esto, Flutter ocupa la ejecución de un widget inicial, el cual será el encargado de mostrar la aplicación como tal, dar la información, mostrar vistas y en donde vamos a hacer la configuración inicial de la app. Este widget inicial viene con la función `runApp()`
+
+```dart
+void main() {
+    runApp(myApp);
+}
+```
+
+Dentro de la función `runApp` se tiene que pasar como parámetro un widget, que como se había dicho antes, es la escencia de todo Flutter, y existen dos tipos de widgets:
+
+- **Stateless Widgets:** Piezas de código que se construyen muy rápido debido a que no gestionan estados.
+- **Stateful Widgets:** Similares a los anteriores pero estos si que contienen estados, y se debe gestionar su inicialización, destrucción y su ciclo de vida en general.
+
+Al usar uno u otro widget, estos siempre van a tener que regresar otros widgets y así sucesivamente generando una estructura de árbol, estos widgets que deriven de un widget padre se les conoce como **child**.
+
+```dart
+// Función principal
+void main() {
+  // Retornamos el widget inicial
+  runApp(const MyApp());
+}
+
+// Widget inicial
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Devolvemos widget hijo
+    return MaterialApp(
+        // Sigue la secuencia de widgets
+        home: Text('Hola Mundo')
+    );
+  }
+}
+```
+
+En el widget inicial, se retorna un `MaterialApp()`, la cual representa nuestra aplicación y su configuración, es decir, donde se indica qué vista será el inicio de la aplicación, las rutas que hay en la app (otras vistas), métodos builder, entre muchas otras cosas.
