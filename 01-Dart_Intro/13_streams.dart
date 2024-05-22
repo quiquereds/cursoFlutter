@@ -1,7 +1,7 @@
 void main() {
   // Escuhamos el stream
   emitNumbers().listen((value) {
-    print('Stream value: $value');
+    print('Stream value: $value'); // -> 1 ... 2 ... 3 ... 4
   }).cancel();
 }
 

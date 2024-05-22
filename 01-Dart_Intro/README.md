@@ -610,3 +610,39 @@ Se utiliza la palabra reservada `async` para indicarle a Dart que se va a transf
 
 Los streams proporcionan una secuencia asíncrona de datos, pueden ser retornados y son usados como objetos, funciones o métodos que representan un flujo de información que puede estar emitiendo valores periódicamente, una única vez o nunca.
 
+```dart
+void main() {
+  // Escuhamos el stream
+  emitNumbers().listen((value) {
+    print('Stream value: $value'); // -> 1 ... 2 ... 3 ... 4
+  }).cancel();
+}
+
+Stream<int> emitNumbers() {
+  return Stream.periodic(const Duration(seconds: 2), (value) {
+    return value;
+  }).take(5); // Se escuchan las 5 primeras emisiones
+}
+```
+
+Existe una forma de crear streams controlados utilizando `async*` 
+
+```dart
+void main() {
+  // Escuchamos los valores de la función
+  emitNumber().listen((event) {
+    print('Stream value: $event');
+  });
+}
+
+// Función que regresa un Stream
+Stream<int> emitNumber() async* {
+  final List valuesToEmit = [1, 2, 3, 4, 5];
+
+  // Utilizamos un ciclo for para crear emisiones controladas con la lista anterior
+  for (int i in valuesToEmit) {
+    await Future.delayed(Duration(seconds: 1));
+    yield i;
+  }
+}
+```
