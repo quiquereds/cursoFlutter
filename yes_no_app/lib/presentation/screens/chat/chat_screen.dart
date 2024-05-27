@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yes_no_app/domain/entities/message.dart';
+import 'package:yes_no_app/presentation/providers/chat_provider.dart';
 import 'package:yes_no_app/presentation/widgets/chat/her_message_bubble.dart';
 import 'package:yes_no_app/presentation/widgets/chat/my_message_bubble.dart';
 import 'package:yes_no_app/presentation/widgets/shared/text_box.dart';
@@ -35,6 +38,9 @@ class ChatScreen extends StatelessWidget {
 class _ChatView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // Llamamos al provider de chat para estar al pendiente de los cambios
+    final chatProvider = context.watch<ChatProvider>();
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
@@ -43,19 +49,30 @@ class _ChatView extends StatelessWidget {
             // Lista de mensajes (ListView)
             Expanded(
               child: ListView.builder(
-                itemCount: 100,
+                /// Enlazamos al provider al controller del ListView para
+                /// indicarle que cada que exista un nuevo mensaje, se tiene
+                /// que hacer scroll automaticamente hacia abajo.
+                controller: chatProvider.chatController,
+
+                /// Obtenemos el total de los mensajes en la lista message
+                /// de ChatProvider
+                itemCount: chatProvider.messageList.length,
                 itemBuilder: (context, index) {
-                  // Alternamos entre mensajes
-                  /// Para ello, buscamos si el indice actual es
-                  /// divisible entre 2 (par o impar)
-                  return (index % 2 == 0)
+                  // Creamos una instancia de la clase Message
+                  final message = chatProvider.messageList[index];
+
+                  // Validamos de quién es el mensaje para dibujarlo en pantalla
+                  return (message.fromWho == FromWho.they)
                       ? const HerMeesageBubble()
-                      : const MyMessageBubble();
+                      : MyMessageBubble(message: message);
                 },
               ),
             ),
             // Campo de texto para escribir mensajes (TextField)
-            const TextBox()
+            TextBox(
+              // Le indicamos a Provider que añada un nuevo mensaje
+              onValue: (value) => chatProvider.sendMessage(value),
+            )
           ],
         ),
       ),

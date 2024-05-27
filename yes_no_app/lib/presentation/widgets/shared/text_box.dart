@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 class TextBox extends StatelessWidget {
-  const TextBox({super.key});
+  /// ValueChanged nos da la flexibilidad de no amarrar el widget a que
+  /// solo funcione con Provider
+  final ValueChanged<String> onValue;
+
+  const TextBox({super.key, required this.onValue});
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +40,12 @@ class TextBox extends StatelessWidget {
       suffixIcon: IconButton(
         icon: const Icon(Icons.send_outlined),
         onPressed: () {
+          // Obtenemos el texto
+          final textValue = textController.value.text;
           // Limpiamos el controller
           textController.clear();
+          // Mandamos a llamar a la función con el textValue
+          onValue(textValue);
         },
       ),
     );
@@ -59,6 +67,8 @@ class TextBox extends StatelessWidget {
         /// Mantenemos el foco para brindar mensajes continuos
         /// (el teclado va a permanecer abierto)
         focusNode.requestFocus();
+        // Emitimos el value al padre
+        onValue(value);
       },
       // Función al presionar fuera del formulario
       onTapOutside: (event) {
