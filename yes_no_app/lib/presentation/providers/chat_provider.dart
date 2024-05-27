@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:yes_no_app/config/helpers/get_yes_no_answer.dart';
 import 'package:yes_no_app/domain/entities/message.dart';
 
 /// ChangeNotifier permite notificar en el árbol de widgets cuando hay cambios
 /// esto le permite a Flutter volver a renderizar cuando hay dicho cambio
 class ChatProvider extends ChangeNotifier {
+  // Inicializamos un controllador de scroll para el chat
   final ScrollController chatController = ScrollController();
+  // Inicializamos la clase para peticiones HTTP
+  final GetYesNoAnswer getYesNoAnswer = GetYesNoAnswer();
 
   // Iniciamos con dos mensajes
   List<Message> messageList = [
-    Message(text: 'Hola mundo', fromWho: FromWho.me),
-    Message(text: 'Holaaaa', fromWho: FromWho.they),
+    Message(text: 'Holaaa', fromWho: FromWho.me),
+    Message(text: 'Oye estaba pensando algo', fromWho: FromWho.me),
   ];
 
   // Función para enviar mensaje
@@ -25,8 +29,27 @@ class ChatProvider extends ChangeNotifier {
     // Añadimos el mensaje a la lista
     messageList.add(newMessage);
 
+    // Validamos si el mensaje es una pregunta
+    if (text.endsWith('?')) {
+      await receiveReply();
+    }
+
     // Notificamos los cambios para volver a renderizar
     notifyListeners();
+    // Hacemos scroll hacia abajo
+    moveScrollToBottom();
+  }
+
+  Future<void> receiveReply() async {
+    // Llamamos a la función HTTP y la almacenamos en reply
+    final reply = await getYesNoAnswer.getAnswer();
+
+    // Añadimos la respuesta a la lista
+    messageList.add(reply);
+
+    // Notificamos los cambios para volver a renderizar
+    notifyListeners();
+
     // Hacemos scroll hacia abajo
     moveScrollToBottom();
   }

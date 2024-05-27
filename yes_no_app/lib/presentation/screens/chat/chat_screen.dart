@@ -13,7 +13,7 @@ class ChatScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(''),
+        title: const Text('Mi amor'),
         // Centrar el titulo del App bar
         centerTitle: true,
         // Espacio antes del título
@@ -63,7 +63,7 @@ class _ChatView extends StatelessWidget {
 
                   // Validamos de quién es el mensaje para dibujarlo en pantalla
                   return (message.fromWho == FromWho.they)
-                      ? const HerMeesageBubble()
+                      ? HerMeesageBubble(message: message)
                       : MyMessageBubble(message: message);
                 },
               ),
