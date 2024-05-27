@@ -5,6 +5,12 @@ class TextBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Creamos un controlador Focus Node
+    final FocusNode focusNode = FocusNode();
+
+    // Creamos un controlador de la caja de texto
+    final TextEditingController textController = TextEditingController();
+
     // Recuperamos el color
     final ColorScheme colors = Theme.of(context).colorScheme;
 
@@ -16,6 +22,9 @@ class TextBox extends StatelessWidget {
 
     // Creamos una variable para almacenar toda la decoración
     final formInputDecoration = InputDecoration(
+      // Pista del formulario
+      hintText: 'End your message with a \'?\'',
+
       // Estilo del campo
       enabledBorder: outlineInputBorder,
       focusedBorder: outlineInputBorder.copyWith(
@@ -27,22 +36,34 @@ class TextBox extends StatelessWidget {
       suffixIcon: IconButton(
         icon: const Icon(Icons.send_outlined),
         onPressed: () {
-          // TODO: Recuperar el valor enviado
-          print('Boton presionado, valor: ?');
+          // Limpiamos el controller
+          textController.clear();
         },
       ),
     );
 
     // Widget de formulario de texto de Flutter
     return TextFormField(
+      focusNode: focusNode,
+      // Asignamos el controlador del formulario
+      controller: textController,
+      // Asignamos la decoración establecida previamente
       decoration: formInputDecoration,
-      // Mostramos en consola cada tecla que se presiona
-      onChanged: (value) {
-        print('Changed: $value');
-      },
+      // Propiedades del teclado
+      keyboardType: TextInputType.text,
+      // Función de envío del formulario
       onFieldSubmitted: (value) {
-        // Mostramos en consola el valor enviado
-        print('value: $value');
+        // Limpiamos el controller
+        textController.clear();
+
+        /// Mantenemos el foco para brindar mensajes continuos
+        /// (el teclado va a permanecer abierto)
+        focusNode.requestFocus();
+      },
+      // Función al presionar fuera del formulario
+      onTapOutside: (event) {
+        // Llamamos al focusNode para salir del teclado
+        focusNode.unfocus();
       },
     );
   }
