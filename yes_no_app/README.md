@@ -30,5 +30,13 @@ Image.network(
         );
     },
 ),
-
 ```
+
+# Gestor de Estado
+
+En Flutter, el BuildContext proporciona información sobre cómo está nuestra aplicación, cuál es la estructura del árbol de widgets y el estado (o no) de los widgets. Recordemos que el único widget que tiene estado, es el Stateful Widget y es el que puede decirle a Dart que se vuelva a renderizar para mostrar algún cambio en el UI de la aplicación.
+
+Cuando uno de estos widgets requiere conocer información de sus padres en el árbol de widgets, o mejor dicho, para que exista una comunicación en el árbol, estos tienen que recorrer todo el árbol de widgets para recabar la información que necesita, creando un grave problema de ineficiencia.
+
+Es aquí cuando entran los gestores de estado, los cuales nos permiten manejar de forma centralizada todos los datos que se requieren saber en una estructura de árbol de widgets.
+
