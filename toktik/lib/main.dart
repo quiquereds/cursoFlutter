@@ -15,7 +15,12 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => DiscoverProvider(),
+          /// Por defecto en los providers, se crean las instancias hasta que es
+          /// necesario, inicializandose de esta manera de forma perezosa, para
+          /// brincarse esto, la bandera de lazy, se debe colocar en false si se
+          /// desea que se lance el constructor de forma inmediata.
+          lazy: false,
+          create: (_) => DiscoverProvider()..loadNextPage(),
         )
       ],
       child: MaterialApp(
