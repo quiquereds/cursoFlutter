@@ -38,5 +38,5 @@ En Flutter, el BuildContext proporciona información sobre cómo está nuestra a
 
 Cuando uno de estos widgets requiere conocer información de sus padres en el árbol de widgets, o mejor dicho, para que exista una comunicación en el árbol, estos tienen que recorrer todo el árbol de widgets para recabar la información que necesita, creando un grave problema de ineficiencia.
 
-Es aquí cuando entran los gestores de estado, los cuales nos permiten manejar de forma centralizada todos los datos que se requieren saber en una estructura de árbol de widgets.
+Es aquí cuando entran los gestores de estado, los cuales nos permiten manejar de forma centralizada todos los datos que se requieren saber en una estructura de árbol de widgets. 
 
