@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toktik/config/theme/app_theme.dart';
+import 'package:toktik/infrastructure/datasources/local_video_datasource_impl.dart';
+import 'package:toktik/infrastructure/repositories/video_posts_repository_impl.dart';
 import 'package:toktik/presentation/providers/discover_provider.dart';
 import 'package:toktik/presentation/screens/discover/discover_screen.dart';
 
@@ -11,6 +13,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    /// Asignamos que de momento, el repositorio va a acceder a los videos locales
+    final videoPostRepository =
+        VideoPostsRepositoryImpl(videosDatasource: LocalVideoDatasource());
+
     // Hacemos accesible el provider a nivel global de la aplicación
     return MultiProvider(
       providers: [
@@ -20,7 +26,8 @@ class MyApp extends StatelessWidget {
           /// brincarse esto, la bandera de lazy, se debe colocar en false si se
           /// desea que se lance el constructor de forma inmediata.
           lazy: false,
-          create: (_) => DiscoverProvider()..loadNextPage(),
+          create: (_) => DiscoverProvider(videosRepository: videoPostRepository)
+            ..loadNextPage(),
         )
       ],
       child: MaterialApp(

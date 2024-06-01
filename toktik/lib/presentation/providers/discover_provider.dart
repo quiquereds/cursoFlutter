@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:toktik/domain/entities/video_post.dart';
-import 'package:toktik/infrastructure/models/local_video_model.dart';
-import 'package:toktik/shared/data/local_video_posts.dart';
+import 'package:toktik/domain/repositories/video_posts_repository.dart';
 
 class DiscoverProvider extends ChangeNotifier {
-  // TODO: Repositorio y Data Source
+  // Solicitamos un repositorio de videos para el provider
+  final VideoPostRepository videosRepository;
+
+  // Creamos el constructor
+  DiscoverProvider({required this.videosRepository});
 
   // Bandera booleana que se encargará de cargar videos al iniciar la app
   bool initialLoading = true;
@@ -13,18 +16,12 @@ class DiscoverProvider extends ChangeNotifier {
   List<VideoPost> videos = [];
 
   Future<void> loadNextPage() async {
-    /// Utilizamos el método map del tipo de dato de lista para recorrer cada
-    /// uno de los elementos dentro del listado
-    final List<VideoPost> newVideos = videoPosts
-        .map(
-          /// Utilizamos el modelo de datos para mappear los datos JSON,
-          /// pasarlos a una entidad de video y agruparlos en una lista
-          (video) => LocalVideoModel.fromJson(video).toVideoPostEntity(),
-        )
-        .toList();
+    /// Mandamos a llamar al repositorio para obtener los videos
+    final newVideos = await videosRepository.getTrendingVideosByPage(1);
 
-    // Añadimos los videos que obtuvimos antes a la lista
+    // Añadimos los videos que obtuvimos a la lista
     videos.addAll(newVideos);
+
     // Actualizamos la bandera
     initialLoading = false;
     notifyListeners();
