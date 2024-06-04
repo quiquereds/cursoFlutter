@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:widgets_app/config/menu/menu_items.dart';
+import 'package:widgets_app/presentation/screens/buttons/buttons_screen.dart';
+import 'package:widgets_app/presentation/screens/cards/cards_screen.dart';
 
 class MenuButton extends StatelessWidget {
   final MenuItem menuItem;
@@ -34,7 +36,17 @@ class MenuButton extends StatelessWidget {
           size: 30,
         ),
       ),
-      onTap: () {},
+      onTap: () {
+        // Método de navegación con el constructor de la pantalla
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const CardsScreen(),
+          ),
+        );
+
+        // Método de navegación por rutas
+        Navigator.of(context).pushNamed(menuItem.link);
+      },
     );
   }
 }
