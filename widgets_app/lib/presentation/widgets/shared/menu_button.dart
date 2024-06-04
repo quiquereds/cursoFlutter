@@ -50,6 +50,9 @@ class MenuButton extends StatelessWidget {
 
         // Navegación utilizando go_router
         context.push(menuItem.link);
+
+        // Navegación utilizando rutas nombradas de go_router
+        //  context.pushNamed(CardsScreen.name);
       },
     );
   }
