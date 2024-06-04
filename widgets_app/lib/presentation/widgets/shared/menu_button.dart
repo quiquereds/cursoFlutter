@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:widgets_app/config/menu/menu_items.dart';
 import 'package:widgets_app/presentation/screens/buttons/buttons_screen.dart';
 import 'package:widgets_app/presentation/screens/cards/cards_screen.dart';
@@ -38,14 +39,17 @@ class MenuButton extends StatelessWidget {
       ),
       onTap: () {
         // Método de navegación con el constructor de la pantalla
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => const CardsScreen(),
-          ),
-        );
+        //  Navigator.of(context).push(
+        //    MaterialPageRoute(
+        //      builder: (context) => const CardsScreen(),
+        //    ),
+        //  );
 
         // Método de navegación por rutas
-        Navigator.of(context).pushNamed(menuItem.link);
+        //  Navigator.of(context).pushNamed(menuItem.link);
+
+        // Navegación utilizando go_router
+        context.push(menuItem.link);
       },
     );
   }
