@@ -13,6 +13,8 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // Vinculamos GoRouter con la app
     return MaterialApp.router(
+      // Configuramos el título de la aplicación
+      title: 'Flutter Widgets',
       // Especificamos la configuración del router
       routerConfig: appRouter,
       theme: AppTheme(selectedColor: 4).getTheme(),
