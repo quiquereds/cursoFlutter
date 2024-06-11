@@ -33,15 +33,9 @@ const List<MenuItem> appMenuItem = [
     icon: Icons.credit_card,
   ),
   MenuItem(
-    title: 'Animados',
-    subtitle: 'Un contenedor estilizado',
-    link: '/animated',
-    icon: Icons.sentiment_satisfied_outlined,
-  ),
-  MenuItem(
-    title: 'App Tutorial',
-    subtitle: 'Un contenedor estilizado',
-    link: '/app_tutorial',
-    icon: Icons.scatter_plot_sharp,
+    title: 'Progress Indicators',
+    subtitle: 'Generales y controlados',
+    link: '/progress',
+    icon: Icons.refresh_rounded,
   ),
 ];
