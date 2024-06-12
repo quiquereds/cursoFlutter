@@ -7,9 +7,11 @@ environment:
   sdk: '>=3.4.0 <4.0.0'
 
 dependencies:
+  animate_do: ^3.3.4
   flutter:
     sdk: flutter
   go_router: ^14.1.4
+  smooth_page_indicator: ^1.1.0
 
 dev_dependencies:
   flutter_lints: ^3.0.0
@@ -19,5 +21,5 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-assets:
-  - assets/images/
+  assets:
+    - assets/images/
