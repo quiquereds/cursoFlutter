@@ -55,5 +55,10 @@ final appRouter = GoRouter(
       name: UIControlsScreen.name,
       builder: (context, state) => const UIControlsScreen(),
     ),
+    GoRoute(
+      path: '/counter',
+      name: CounterScreen.name,
+      builder: (context, state) => const CounterScreen(),
+    ),
   ],
 );

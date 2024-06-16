@@ -21,6 +21,12 @@ class MenuItem {
 // Creamos la lista de opciones del menú
 const List<MenuItem> appMenuItem = [
   MenuItem(
+    title: 'Counter',
+    subtitle: 'Un contador con Flutter y Riverpod',
+    link: '/counter',
+    icon: Icons.plus_one_rounded,
+  ),
+  MenuItem(
     title: 'Botones',
     subtitle: 'Varios botones de Flutter',
     link: '/buttons',
