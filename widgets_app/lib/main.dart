@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:widgets_app/config/router/app_router.dart';
+import 'package:widgets_app/config/theme/app_theme.dart';
 
 void main() {
   runApp(const MainApp());
@@ -9,12 +11,12 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+    // Vinculamos GoRouter con la app
+    return MaterialApp.router(
+      // Especificamos la configuración del router
+      routerConfig: appRouter,
+      theme: AppTheme(selectedColor: 4).getTheme(),
+      debugShowMaterialGrid: false,
     );
   }
 }
