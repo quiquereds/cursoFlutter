@@ -74,4 +74,10 @@ const List<MenuItem> appMenuItem = [
     link: '/infinite',
     icon: Icons.list_rounded,
   ),
+  MenuItem(
+    title: 'Theme Changer',
+    subtitle: 'Ajusta el color de la app con Riverpod',
+    link: '/theme-changer',
+    icon: Icons.color_lens_outlined,
+  ),
 ];

@@ -89,7 +89,6 @@ class _AppTutorialScreenState extends State<AppTutorialScreen> {
     final colors = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Stack(
         children: [
           // Listado de slides
