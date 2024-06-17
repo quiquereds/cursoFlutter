@@ -21,6 +21,12 @@ class MenuItem {
 // Creamos la lista de opciones del menú
 const List<MenuItem> appMenuItem = [
   MenuItem(
+    title: 'Counter',
+    subtitle: 'Un contador con Flutter y Riverpod',
+    link: '/counter',
+    icon: Icons.plus_one_rounded,
+  ),
+  MenuItem(
     title: 'Botones',
     subtitle: 'Varios botones de Flutter',
     link: '/buttons',
@@ -33,15 +39,45 @@ const List<MenuItem> appMenuItem = [
     icon: Icons.credit_card,
   ),
   MenuItem(
-    title: 'Animados',
-    subtitle: 'Un contenedor estilizado',
-    link: '/animated',
-    icon: Icons.sentiment_satisfied_outlined,
+    title: 'Progress Indicators',
+    subtitle: 'Generales y controlados',
+    link: '/progress',
+    icon: Icons.refresh_rounded,
   ),
   MenuItem(
-    title: 'App Tutorial',
-    subtitle: 'Un contenedor estilizado',
-    link: '/app_tutorial',
-    icon: Icons.scatter_plot_sharp,
+    title: 'Snackbars y diálogos',
+    subtitle: 'Indicadores en pantalla',
+    link: '/snackbars',
+    icon: Icons.info_outline_rounded,
+  ),
+  MenuItem(
+    title: 'Animated Container',
+    subtitle: 'Stateful Widget animado',
+    link: '/animated',
+    icon: Icons.check_box_outline_blank_rounded,
+  ),
+  MenuItem(
+    title: 'UI Controls + Tiles',
+    subtitle: 'Una serie de controles de Flutter',
+    link: '/ui-controls',
+    icon: Icons.car_rental_outlined,
+  ),
+  MenuItem(
+    title: 'Introducción a la aplicación',
+    subtitle: 'Pequeño tutorial introductorio',
+    link: '/tutorial',
+    icon: Icons.accessible_rounded,
+  ),
+  MenuItem(
+    title: 'Infinite Scroll y Pull to Refresh',
+    subtitle: 'Listas infinitas y pull to refresh',
+    link: '/infinite',
+    icon: Icons.list_rounded,
+  ),
+  MenuItem(
+    title: 'Theme Changer',
+    subtitle: 'Ajusta el color de la app con Riverpod',
+    link: '/theme-changer',
+    icon: Icons.color_lens_outlined,
   ),
 ];

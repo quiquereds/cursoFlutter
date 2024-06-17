@@ -12,12 +12,15 @@ const List<Color> colorList = [
 ];
 
 class AppTheme {
-  // Creamos un atributo necesario
+  // Propiedad para controlar el color seleccionado
   final int selectedColor;
+  // Propiedad para controlar el tema oscuro
+  final bool isDarkMode;
 
   // Inicializamos el constructor
   AppTheme({
     this.selectedColor = 0,
+    this.isDarkMode = false,
 
     /// Creamos una aserción para que se evite la asignación de indices fuera
     /// del arreglo de colorList
@@ -28,6 +31,7 @@ class AppTheme {
   // Creamos un método para devolver el tema actual
   ThemeData getTheme() {
     return ThemeData(
+      brightness: isDarkMode ? Brightness.dark : Brightness.light,
       // Creamos la paleta de colores acorde con el indice elegido
       colorSchemeSeed: colorList[selectedColor],
       // Centramos los titulos de los Scaffold a nivel global
@@ -36,4 +40,10 @@ class AppTheme {
       ),
     );
   }
+
+  // Creamos un método para sobreescribir propiedades
+  AppTheme copyWith({int? selectedColor, bool? isDarkMode}) => AppTheme(
+        selectedColor: selectedColor ?? this.selectedColor,
+        isDarkMode: isDarkMode ?? this.isDarkMode,
+      );
 }
