@@ -21,7 +21,7 @@ class CounterScreen extends ConsumerWidget {
     final int counterValue = ref.watch(counterProvider);
 
     // Creamos la referencia al tema de la aplicación
-    final bool isDarkMode = ref.watch(isDarkModeProvider);
+    final bool isDarkMode = ref.watch(themeNotifierProvider).isDarkMode;
 
     return Scaffold(
       appBar: AppBar(
@@ -32,8 +32,8 @@ class CounterScreen extends ConsumerWidget {
               isDarkMode ? Icons.dark_mode_outlined : Icons.light_mode_outlined,
             ),
             onPressed: () {
-              // Escuchamos el cambio al cambiar el estado al tema
-              ref.read(isDarkModeProvider.notifier).update((state) => !state);
+              // Accedemos a los datos del notifier para cambiar el tema
+              ref.read(themeNotifierProvider.notifier).toggleDarkMode();
             },
           ),
         ],
