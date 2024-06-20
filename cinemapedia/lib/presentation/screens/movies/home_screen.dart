@@ -1,8 +1,7 @@
 import 'package:cinemapedia/presentation/providers/providers.dart';
+import 'package:cinemapedia/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../domain/entities/movie_entity.dart';
 
 class HomeScreen extends StatelessWidget {
   /// Creamos el nombre de la ruta
@@ -39,19 +38,13 @@ class _HomeViewState extends ConsumerState<_HomeView> {
   @override
   Widget build(BuildContext context) {
     // Creamos una referencia al estado del listado de películas
-    final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
+    final slideshowMovies = ref.watch(moviesSlideshowProvider);
 
-    return ListView.builder(
-      itemCount: nowPlayingMovies.length,
-      itemBuilder: (context, index) {
-        final Movie movie = nowPlayingMovies[index];
-
-        return ListTile(
-          leading: Image.network(movie.posterPath),
-          title: Text(movie.title),
-          subtitle: Text(movie.overview),
-        );
-      },
+    return Column(
+      children: [
+        const CustomAppbar(),
+        MoviesSlideshow(movies: slideshowMovies),
+      ],
     );
   }
 }
