@@ -50,9 +50,13 @@ class MoviedbDatasource extends MoviesDatasource {
 
         /// Aplicamos un filtro para que no se incluyan las películas
         /// que no tienen poster
-        .where((moviedb) => moviedb.posterPath != 'file:///no-poster')
-        .map((e) => MovieMapper.movieDBToEntity(e))
+        .where((moviedb) => moviedb.posterPath != 'no-poster')
+        .map((movieDb) => MovieMapper.movieDBToEntity(movieDb))
         .toList();
+
+    // Quitamos las películas que se tengan no-poster
+    movies.removeWhere((movie) =>
+        movie.posterPath == 'no-poster' || movie.backdropPath == 'no-poster');
 
     // Devolvemos el listado
     return movies;
