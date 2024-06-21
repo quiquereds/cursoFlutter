@@ -3,7 +3,7 @@ import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:cinemapedia/domain/entities/movie_entity.dart';
 import 'package:flutter/material.dart';
 
-class MovieHorizontalListview extends StatelessWidget {
+class MovieHorizontalListview extends StatefulWidget {
   final List<Movie> movies;
   final String? title;
   final String? subtitle;
@@ -19,26 +19,68 @@ class MovieHorizontalListview extends StatelessWidget {
   });
 
   @override
+  State<MovieHorizontalListview> createState() =>
+      _MovieHorizontalListviewState();
+}
+
+class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
+  // Creamos un controlador del scroll
+  final scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Añadimos el listener del scroll
+    scrollController.addListener(() {
+      // Si no existe un método de loadNextPage no se hace nada
+      if (widget.loadNextPage == null) return;
+
+      // Posición actual
+      final currentPosition = scrollController.position.pixels;
+
+      // Posición de desplazamiento máxima
+      final maxScroll = scrollController.position.maxScrollExtent;
+
+      // Determinamos si nos encontramos cerca del scroll maxima
+      if (currentPosition + 200 >= maxScroll) {
+        // Mandamos a llamar la función
+        print('LoadNextPage');
+        widget.loadNextPage!();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // Creamos el dispose del listener para liberar los recursos de memoria
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 350,
+      height: 400,
       child: Column(
         children: [
           /// Solo si el widget cuenta con titulo o subtitulo se renderiza
           /// el widget _Title
-          if (title != null || subtitle != null)
+          if (widget.title != null || widget.subtitle != null)
             _Title(
-              title: title,
-              subtitle: subtitle,
+              title: widget.title,
+              subtitle: widget.subtitle,
             ),
+
+          const SizedBox(height: 20),
 
           Expanded(
             child: ListView.builder(
+              // Asociamos el controller al ListView
+              controller: scrollController,
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
-              itemCount: movies.length,
+              itemCount: widget.movies.length,
               itemBuilder: (context, index) {
-                return _Slide(movie: movies[index]);
+                return _Slide(movie: widget.movies[index]);
               },
             ),
           ),

@@ -29,6 +29,8 @@ typedef MovieCallback = Future<List<Movie>> Function({int page});
 class MoviesNotifier extends StateNotifier<List<Movie>> {
   // Creamos un controlador de la página actual
   int currentPage = 0;
+  // Creamos una bandera para controlar el flujo de peticiones
+  bool isLoading = false;
 
   // Recibimos el caso de uso
   MovieCallback fetchMoreMovies;
@@ -39,6 +41,12 @@ class MoviesNotifier extends StateNotifier<List<Movie>> {
 
   // Creamos una función que modificará el estado de la página actual
   Future<void> loadNextPage() async {
+    // Si la bandera está en true, salimos de la función
+    if (isLoading) return;
+
+    // Actualizamos la bandera
+    isLoading = true;
+
     // Incrementamos el controlador
     currentPage++;
 
@@ -47,5 +55,11 @@ class MoviesNotifier extends StateNotifier<List<Movie>> {
 
     // Reemplazamos el estado por uno nuevo
     state = [...state, ...movies];
+
+    // Damos un tiempo a que las películas se renderizen
+    await Future.delayed(const Duration(milliseconds: 300));
+
+    // Actualizamos la bandera al terminar
+    isLoading = false;
   }
 }

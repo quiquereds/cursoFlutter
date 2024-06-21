@@ -32,8 +32,14 @@ class MoviedbDatasource extends MoviesDatasource {
   @override
   Future<List<Movie>> getNowPlaying({int page = 1}) async {
     /// Creamos la variable response donde se va a guardar la respuesta
-    /// de la petición HTTP al endpoint 'now_playing'
-    final response = await dio.get('/movie/now_playing');
+    /// de la petición HTTP al endpoint 'now_playing' con el queryParameter
+    /// de la página.
+    final response = await dio.get(
+      '/movie/now_playing',
+      queryParameters: {
+        'page': page,
+      },
+    );
 
     // Transformamos el JSON a una respuesta MovieDB (objeto)
     final movieDBResponse = MovieDbResponse.fromMap(response.data);
@@ -44,7 +50,7 @@ class MoviedbDatasource extends MoviesDatasource {
 
         /// Aplicamos un filtro para que no se incluyan las películas
         /// que no tienen poster
-        .where((moviedb) => moviedb.posterPath != 'no-poster')
+        .where((moviedb) => moviedb.posterPath != 'file:///no-poster')
         .map((e) => MovieMapper.movieDBToEntity(e))
         .toList();
 
