@@ -43,15 +43,27 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     // Creamos una referencia al provider del slideshow
     final slideshowMovies = ref.watch(moviesSlideshowProvider);
 
+    /// Añadimos un CustomScrollView que permite trabajar con Slivers, los
+    /// cuales tienen ciertos controles al hacer scroll en la app.
+    ///
+    /// El objetivo es que el AppBar sea visible cuando se está desplazando
+    /// hacia arriba
     return CustomScrollView(
       slivers: [
+        const SliverAppBar(
+          stretch: true,
+          floating: true,
+          flexibleSpace: FlexibleSpaceBar(
+            title: CustomAppbar(),
+            // Usamos el TitlePadding para quitar el espacio a la izquierda
+            titlePadding: EdgeInsets.zero,
+          ),
+        ),
         SliverList(
           delegate: SliverChildBuilderDelegate(
             (context, index) {
               return Column(
                 children: [
-                  // AppBar de la aplicación
-                  const CustomAppbar(),
                   // Slideshow de las primeras 6 películas en cartelera
                   MoviesSlideshow(movies: slideshowMovies),
                   // Horizontal ListView de las películas en cartelera
