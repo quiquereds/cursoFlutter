@@ -34,6 +34,9 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     super.initState();
     // Accedemos al notifier para cargar los datos
     ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+    ref.read(popularMoviesProvider.notifier).loadNextPage();
+    ref.read(upcomingMoviesProvider.notifier).loadNextPage();
+    ref.read(topRatedMoviesProvider.notifier).loadNextPage();
   }
 
   @override
@@ -42,6 +45,12 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
     // Creamos una referencia al provider del slideshow
     final slideshowMovies = ref.watch(moviesSlideshowProvider);
+    // Creamos una referencia al estado del listado de populares
+    final popularMovies = ref.watch(popularMoviesProvider);
+    // Creamos una referencia al estado del listado de a continuación
+    final upcomingMovies = ref.watch(upcomingMoviesProvider);
+    // Creamos una referencia al estado del listado de mejor votadas
+    final topRatedMovies = ref.watch(topRatedMoviesProvider);
 
     /// Añadimos un CustomScrollView que permite trabajar con Slivers, los
     /// cuales tienen ciertos controles al hacer scroll en la app.
@@ -53,6 +62,7 @@ class _HomeViewState extends ConsumerState<_HomeView> {
         const SliverAppBar(
           stretch: true,
           floating: true,
+          backgroundColor: Colors.white,
           flexibleSpace: FlexibleSpaceBar(
             title: CustomAppbar(),
             // Usamos el TitlePadding para quitar el espacio a la izquierda
@@ -81,32 +91,26 @@ class _HomeViewState extends ConsumerState<_HomeView> {
                   MovieHorizontalListview(
                     title: 'Próximamente',
                     subtitle: 'En este mes',
-                    movies: nowPlayingMovies,
+                    movies: upcomingMovies,
                     loadNextPage: () {
-                      ref
-                          .read(nowPlayingMoviesProvider.notifier)
-                          .loadNextPage();
+                      ref.read(upcomingMoviesProvider.notifier).loadNextPage();
                     },
                   ),
 
                   MovieHorizontalListview(
                     title: 'Populares',
-                    movies: nowPlayingMovies,
+                    movies: popularMovies,
                     loadNextPage: () {
-                      ref
-                          .read(nowPlayingMoviesProvider.notifier)
-                          .loadNextPage();
+                      ref.read(popularMoviesProvider.notifier).loadNextPage();
                     },
                   ),
 
                   MovieHorizontalListview(
                     title: 'Mejor calificadas',
                     subtitle: 'Desde siempre',
-                    movies: nowPlayingMovies,
+                    movies: topRatedMovies,
                     loadNextPage: () {
-                      ref
-                          .read(nowPlayingMoviesProvider.notifier)
-                          .loadNextPage();
+                      ref.read(topRatedMoviesProvider.notifier).loadNextPage();
                     },
                   ),
                 ],

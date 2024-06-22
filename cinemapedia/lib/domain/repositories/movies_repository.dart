@@ -6,4 +6,13 @@ import 'package:cinemapedia/domain/entities/movie_entity.dart';
 abstract class MoviesRepository {
   // Método para obtener las películas en cartelera
   Future<List<Movie>> getNowPlaying({int page = 1});
+
+  // Método para obtener las películas populares
+  Future<List<Movie>> getPopular({int page = 1});
+
+  // Método para obtener películas a continuación
+  Future<List<Movie>> getUpcoming({int page = 1});
+
+  // Método para obtener películas mejor calificadas
+  Future<List<Movie>> getTopRated({int page = 1});
 }

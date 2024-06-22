@@ -1,3 +1,4 @@
+import 'package:cinemapedia/config/constants/images.dart';
 import 'package:flutter/material.dart';
 
 class CustomAppbar extends StatelessWidget {
@@ -5,9 +6,6 @@ class CustomAppbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    final textStyleTheme = Theme.of(context).textTheme;
-
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -15,13 +13,10 @@ class CustomAppbar extends StatelessWidget {
           width: double.infinity,
           child: Row(
             children: [
-              Icon(
-                Icons.movie_outlined,
-                size: 30,
-                color: colors.primary,
+              Image.asset(
+                cinemexLogo,
+                scale: 0.5,
               ),
-              const SizedBox(width: 10),
-              Text('Cinemapedia', style: textStyleTheme.titleLarge),
               const Spacer(),
               IconButton(
                 onPressed: () {},

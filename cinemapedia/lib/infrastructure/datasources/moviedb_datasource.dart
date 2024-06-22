@@ -28,21 +28,10 @@ class MoviedbDatasource extends MoviesDatasource {
     ),
   );
 
-  // Implementamos el método para obtener las películas en cartelera
-  @override
-  Future<List<Movie>> getNowPlaying({int page = 1}) async {
-    /// Creamos la variable response donde se va a guardar la respuesta
-    /// de la petición HTTP al endpoint 'now_playing' con el queryParameter
-    /// de la página.
-    final response = await dio.get(
-      '/movie/now_playing',
-      queryParameters: {
-        'page': page,
-      },
-    );
-
+  // Creamos un método para devolver una lista de películas
+  List<Movie> _jsonToMovies(Map<String, dynamic> json) {
     // Transformamos el JSON a una respuesta MovieDB (objeto)
-    final movieDBResponse = MovieDbResponse.fromMap(response.data);
+    final movieDBResponse = MovieDbResponse.fromMap(json);
 
     /// Convertimos cada respuesta a la entidad Movie con el mapper
     /// y las pasamos a lista.
@@ -58,7 +47,74 @@ class MoviedbDatasource extends MoviesDatasource {
     movies.removeWhere((movie) =>
         movie.posterPath == 'no-poster' || movie.backdropPath == 'no-poster');
 
-    // Devolvemos el listado
     return movies;
+  }
+
+  // Implementamos el método para obtener las películas en cartelera
+  @override
+  Future<List<Movie>> getNowPlaying({int page = 1}) async {
+    /// Creamos la variable response donde se va a guardar la respuesta
+    /// de la petición HTTP al endpoint 'now_playing' con el queryParameter
+    /// de la página.
+    final response = await dio.get(
+      '/movie/now_playing',
+      queryParameters: {
+        'page': page,
+      },
+    );
+
+    // Llamamos al método para transformar el JSON a una lista de Movie
+    return _jsonToMovies(response.data);
+  }
+
+  // Implementamos el método para obtener las películas populares
+  @override
+  Future<List<Movie>> getPopular({int page = 1}) async {
+    /// Creamos la variable response donde se va a guardar la respuesta
+    /// de la petición HTTP al endpoint 'popular' con el queryParameter
+    /// de la página.
+    final response = await dio.get(
+      '/movie/popular',
+      queryParameters: {
+        'page': page,
+      },
+    );
+
+    // Llamamos al método para transformar el JSON a una lista de Movie
+    return _jsonToMovies(response.data);
+  }
+
+  // Implementamos el método para obtener las películas a continuación
+  @override
+  Future<List<Movie>> getUpcoming({int page = 1}) async {
+    /// Creamos la variable response donde se va a guardar la respuesta
+    /// de la petición HTTP al endpoint 'popular' con el queryParameter
+    /// de la página.
+    final response = await dio.get(
+      '/movie/upcoming',
+      queryParameters: {
+        'page': page,
+      },
+    );
+
+    // Llamamos al método para transformar el JSON a una lista de Movie
+    return _jsonToMovies(response.data);
+  }
+
+  // Implementamos el método para obtener las películas a continuación
+  @override
+  Future<List<Movie>> getTopRated({int page = 1}) async {
+    /// Creamos la variable response donde se va a guardar la respuesta
+    /// de la petición HTTP al endpoint 'popular' con el queryParameter
+    /// de la página.
+    final response = await dio.get(
+      '/movie/top_rated',
+      queryParameters: {
+        'page': page,
+      },
+    );
+
+    // Llamamos al método para transformar el JSON a una lista de Movie
+    return _jsonToMovies(response.data);
   }
 }
