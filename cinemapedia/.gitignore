@@ -44,3 +44,6 @@ app.*.map.json
 
 # API Keys
 .env
+
+# Multimedia
+/lib/assets/images
