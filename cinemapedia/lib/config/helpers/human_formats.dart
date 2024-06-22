@@ -5,7 +5,7 @@ class HumanFormats {
   /// y poder utilizarlo directamente
   static String number(double number) {
     final formattedNumber = NumberFormat.compactCurrency(
-      decimalDigits: 0,
+      decimalDigits: 1,
       symbol: '',
       locale: 'en',
     ).format(number);
