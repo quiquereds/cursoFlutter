@@ -41,10 +41,17 @@ class _HomeViewState extends ConsumerState<_HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    // Creamos una referencia al estado del listado de películas
-    final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
+    // Creamos una referencia al estado de las 4 listas de películas
+    final bool initialLoading = ref.watch(initialLoadingProvider);
+    // Si están vacias mostramos el loader
+    if (initialLoading) return const FullScreenLoader();
+
+    // Si no están vacias, se ejecuta todo lo siguiente:
+
     // Creamos una referencia al provider del slideshow
     final slideshowMovies = ref.watch(moviesSlideshowProvider);
+    // Creamos una referencia al estado del listado de películas
+    final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
     // Creamos una referencia al estado del listado de populares
     final popularMovies = ref.watch(popularMoviesProvider);
     // Creamos una referencia al estado del listado de a continuación
