@@ -2,6 +2,7 @@ import 'package:cinemapedia/config/constants/environment.dart';
 import 'package:cinemapedia/domain/datasources/movies_datasource.dart';
 import 'package:cinemapedia/domain/entities/movie_entity.dart';
 import 'package:cinemapedia/infrastructure/mappers/movie_mapper.dart';
+import 'package:cinemapedia/infrastructure/models/moviedb/movie_details.dart';
 import 'package:cinemapedia/infrastructure/models/moviedb/moviedb_response.dart';
 import 'package:dio/dio.dart';
 
@@ -116,5 +117,28 @@ class MoviedbDatasource extends MoviesDatasource {
 
     // Llamamos al método para transformar el JSON a una lista de Movie
     return _jsonToMovies(response.data);
+  }
+
+  @override
+  Future<Movie> getMovieByID(String id) async {
+    /// Creamos la variable response donde se va a guardar la respuesta
+    /// de la petición HTTP al endpoint para obtener información de una
+    /// película en particular
+    final response = await dio.get(
+      '/movie/$id',
+    );
+
+    // Determinamos si existen resultados
+    if (response.statusCode != 200) {
+      throw Exception('Movie with id: $id not found');
+    }
+
+    // Mapeamos la respuesta al modelo de datos de MovieDBDetails
+    final movieDB = MovieDbDetails.fromMap(response.data);
+
+    // Convertimos el modelo a una entidad Movie de la app
+    final Movie movie = MovieMapper.movieDbDetailsToEntity(movieDB);
+
+    return movie;
   }
 }

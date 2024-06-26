@@ -20,4 +20,7 @@ abstract class MoviesDatasource {
 
   // Método para obtener películas mejor calificadas
   Future<List<Movie>> getTopRated({int page = 1});
+
+  // Método para obtener los detalles de la película
+  Future<Movie> getMovieByID(String id);
 }
