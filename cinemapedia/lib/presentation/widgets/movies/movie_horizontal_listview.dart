@@ -207,6 +207,7 @@ class _Title extends StatelessWidget {
               style: const ButtonStyle(visualDensity: VisualDensity.compact),
               child: Text(
                 subtitle!,
+                style: textStyleTheme.titleSmall,
               ),
             ),
         ],
