@@ -28,3 +28,10 @@ flutter:
   assets:
     - .env
     - lib/assets/images/
+
+  fonts:
+  - family: Gilroy
+    fonts:
+      - asset: lib/assets/fonts/Gilroy-Light.otf
+      - asset: lib/assets/fonts/Gilroy-Extrabold.otf
+        weight: 700
