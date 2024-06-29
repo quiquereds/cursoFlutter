@@ -2,11 +2,15 @@ import 'package:animate_do/animate_do.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:cinemapedia/domain/entities/movie_entity.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class MoviesSlideshow extends StatelessWidget {
   final List<Movie> movies;
 
-  const MoviesSlideshow({super.key, required this.movies});
+  const MoviesSlideshow({
+    super.key,
+    required this.movies,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +22,7 @@ class MoviesSlideshow extends StatelessWidget {
       child: Swiper(
         viewportFraction: 0.8,
         scale: 0.9,
+        autoplay: true,
         pagination: SwiperPagination(
           margin: const EdgeInsets.only(top: 0),
           builder: DotSwiperPaginationBuilder(
@@ -71,9 +76,14 @@ class _SlideCard extends StatelessWidget {
                 );
               }
 
-              /// Si la imagen terminó de cargar, mostramos el child con
-              /// una animación FadeIn de entrada
-              return FadeIn(child: child);
+              return GestureDetector(
+                // Utilizamos la navegación mediante ID
+                onTap: () => context.push('/movie/${movie.id}'),
+
+                /// Si la imagen terminó de cargar, mostramos el child con
+                /// una animación FadeIn de entrada
+                child: FadeIn(child: child),
+              );
             },
           ),
         ),
