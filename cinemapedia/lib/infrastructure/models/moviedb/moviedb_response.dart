@@ -1,3 +1,5 @@
+// Modelo de datos que representa un listado de películas
+
 import 'package:cinemapedia/infrastructure/models/moviedb/movie_moviedb.dart';
 
 class MovieDbResponse {

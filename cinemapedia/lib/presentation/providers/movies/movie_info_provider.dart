@@ -2,6 +2,20 @@ import 'package:cinemapedia/domain/entities/movie_entity.dart';
 import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/* 
+  El funcionamiento de este provider es el siguiente
+
+  {
+    '505465' : Movie(),
+    '505466' : Movie(),
+    '505467' : Movie(),
+
+    ...
+  },
+
+  Devolver un mapa de ID's de películas apuntando a una Movie.
+*/
+
 // Creamos un provider encargado de manejar la búsqueda de películas por ID
 final movieInfoProvider =
     StateNotifierProvider<MovieMapNotifier, Map<String, Movie>>((ref) {
