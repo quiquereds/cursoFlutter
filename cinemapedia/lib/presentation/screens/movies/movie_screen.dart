@@ -1,8 +1,9 @@
+import 'package:animate_do/animate_do.dart';
+import 'package:cinemapedia/domain/entities/movie_entity.dart';
 import 'package:cinemapedia/presentation/providers/movies/movie_info_provider.dart';
-import 'package:flutter/material.dart';
+import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../domain/entities/movie_entity.dart';
+import 'package:flutter/material.dart';
 
 class MovieScreen extends ConsumerStatefulWidget {
   static const String name = 'movie-screen';
@@ -23,7 +24,10 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
     // Hacemos la petición a través del provider
     /// Se hace uso de read cuando se quiere conocer el valor del
     /// provider una sola vez
+    // * Cargamos detalles de la película
     ref.read(movieInfoProvider.notifier).loadMovie(widget.movieId);
+    // * Cargamos la lista de actores
+    ref.read(actorsByMovieProvider.notifier).loadActors(widget.movieId);
   }
 
   @override
@@ -50,7 +54,9 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
           _CustomSliverAppBar(movie: movie),
           SliverList(
             delegate: SliverChildBuilderDelegate(
-              (context, index) => _MovieDetails(movie: movie),
+              (context, index) => _MovieDetails(
+                movie: movie,
+              ),
               childCount: 1,
             ),
           ),
@@ -92,8 +98,13 @@ class _MovieDetails extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(movie.title, style: textStyleTheme.titleLarge),
-                    Text(movie.overview),
+                    Text(
+                      movie.title,
+                      style: textStyleTheme.titleLarge,
+                    ),
+                    Text(
+                      movie.overview,
+                    ),
                   ],
                 ),
               )
@@ -121,9 +132,102 @@ class _MovieDetails extends StatelessWidget {
           ),
         ),
 
+        // * Actores de la película
+        _ActorsByMovie(movieId: movie.id.toString()),
+
         // TODO: Actores de la película
-        const SizedBox(height: 500)
+        const SizedBox(height: 20)
       ],
+    );
+  }
+}
+
+class _ActorsByMovie extends ConsumerWidget {
+  final String movieId;
+
+  const _ActorsByMovie({required this.movieId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Creamos una referencia al estilo de texto
+    final textStyleTheme = Theme.of(context).textTheme;
+
+    // Creamos una referencia a la lista de actores por película
+    final actorsByMovie = ref.watch(actorsByMovieProvider);
+
+    // Mientras no esté la película, mostramos un indicador de carga
+    if (actorsByMovie[movieId] == null) {
+      return const CircularProgressIndicator();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SizedBox(
+        // Control del tamaño del ListView
+        height: 120,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: actorsByMovie[movieId]!.length,
+          itemBuilder: (context, index) {
+            final actorsList = actorsByMovie[movieId]![index];
+
+            return Row(
+              children: [
+                FadeInRight(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.08),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                      child: Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              bottomLeft: Radius.circular(20),
+                            ),
+                            child: Image.network(
+                              actorsList.profilePath,
+                              width: 100,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                          SizedBox(
+                            // Control de ancho de columnas de texto
+                            width: 100,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  actorsList.name,
+                                  maxLines: 2,
+                                  style: textStyleTheme.titleMedium!.copyWith(
+                                      overflow: TextOverflow.ellipsis),
+                                ),
+                                Text(
+                                  actorsList.character!,
+                                  style: textStyleTheme.bodyMedium!.copyWith(
+                                      overflow: TextOverflow.ellipsis),
+                                  maxLines: 2,
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 20),
+              ],
+            );
+          },
+        ),
+      ),
     );
   }
 }
@@ -160,6 +264,12 @@ class _CustomSliverAppBar extends StatelessWidget {
               child: Image.network(
                 movie.backdropPath,
                 fit: BoxFit.cover,
+                // Controlamos la carga de la imágen
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress != null) return const SizedBox();
+
+                  return FadeIn(child: child);
+                },
               ),
             ),
             // Gradiente de imagen
