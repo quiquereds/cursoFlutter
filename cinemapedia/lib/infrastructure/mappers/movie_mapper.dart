@@ -17,7 +17,7 @@ class MovieMapper {
       /// Validamos si el backdroppath no viene vacio para concatenar el id
       /// de la imagen proveniente de la respuesta con el endpoint
       backdropPath: (moviedb.backdropPath != '')
-          ? 'https://image.tmdb.org/t/p/w500${moviedb.backdropPath}'
+          ? 'https://image.tmdb.org/t/p/original${moviedb.backdropPath}'
           : 'https://ih1.redbubble.net/image.1893341687.8294/fposter,small,wall_texture,product,750x1000.jpg',
 
       /// Tomamos cada id de la lista de enteros para transformarlos a string
