@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:cinemapedia/domain/entities/movie_entity.dart';
@@ -12,8 +14,43 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   // Creamos los atributos
   final SearchMoviesCallback searchMovie;
 
+  /// Utilizamos un StreamController para tener acceso al listener de eventos
+  /// se utiliza el broadcast cuando no se sabe cuántos widgets están escuchando
+  StreamController<List<Movie>> debouncedMovies = StreamController.broadcast();
+
+  /// Creamos un timer para controlar el flujo de peticiones, de manera que se
+  /// realicen cuando el usuario deja de escribir por un tiempo determinado
+  Timer? _debounceTimer;
+
   // Creamos el constructor
   SearchMovieDelegate({required this.searchMovie});
+
+  // Creamos un método para limpiar todas las instancias de Streams de memoria
+  void clearStreams() {
+    debouncedMovies.close();
+  }
+
+  // Creamos un método encargado de emitir el resultado de las películas
+  void _onQueryChanged(String query) {
+    /// Si el timer está activo, se cancela.
+    /// Es decir, si el usuario va cambiando el query, el timer se cancela para
+    /// que no se hagan peticiones mientras se está escribiendo
+    if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
+
+    /// Inicializamos el timer con una duración de 500 milisegundos, posterior
+    /// a este tiempo es cuando se realiza la petición.
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
+      // Si el query está vacio, no hacemos peticion http, y retornamos una lista vacia
+      if (query.isEmpty) {
+        debouncedMovies.add([]);
+        return;
+      }
+
+      // Si hay algún valor en el query, hacemos la petición
+      final movies = await searchMovie(query);
+      debouncedMovies.add(movies);
+    });
+  }
 
   // Sobreescribimos el String del hint label;
   @override
@@ -45,7 +82,13 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
     return IconButton(
       /// Al presionar el botón devolvemos el context y null (debido a que se
       /// interpreta que no se seleccionó ninguna película)
-      onPressed: () => close(context, null),
+      onPressed: () {
+        // Limpiamos los streams
+        clearStreams();
+
+        /// Retornamos sin argumentos
+        close(context, null);
+      },
       icon: const Icon(Icons.arrow_back_ios_new_rounded),
     );
   }
@@ -61,9 +104,13 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   // Widget que se construye al inicializar la búsqueda
   @override
   Widget buildSuggestions(BuildContext context) {
-    // Usamos un FutureBuilder para trabajar con la función
-    return FutureBuilder(
-      future: searchMovie(query),
+    /// Llamamos a la función de control de peticiones cada que se haga
+    /// un cambio en el query
+    _onQueryChanged(query);
+
+    // Usamos un StreamBuilder para trabajar con la función
+    return StreamBuilder(
+      stream: debouncedMovies.stream,
       builder: (context, snapshot) {
         final List<Movie> movies = snapshot.data ?? [];
         // Usamos un ListView para renderizar los resultados
@@ -74,7 +121,15 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
 
             /// Renderizamos la película y mandamos la función close como referencia
             /// para regresar de la búsqueda con argumentos al seleccionar una película
-            return _MovieSearchItem(movie: movie, onMovieSelected: close);
+            return _MovieSearchItem(
+              movie: movie,
+              onMovieSelected: (context, movie) {
+                // Limpiamos los streams
+                clearStreams();
+                // Volvemos con argumento para pasar a MovieDetails si hay película
+                close(context, movie);
+              },
+            );
           },
         );
       },
@@ -84,7 +139,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
 
 class _MovieSearchItem extends StatelessWidget {
   final Movie movie;
-  final Function onMovieSelected;
+  final Function(BuildContext context, Movie movie) onMovieSelected;
 
   const _MovieSearchItem({
     required this.movie,
