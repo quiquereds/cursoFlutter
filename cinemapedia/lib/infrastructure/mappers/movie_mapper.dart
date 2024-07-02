@@ -30,8 +30,8 @@ class MovieMapper {
       popularity: moviedb.popularity,
       posterPath: (moviedb.posterPath != '')
           ? 'https://image.tmdb.org/t/p/w500${moviedb.posterPath}'
-          : 'no-poster',
-      releaseDate: moviedb.releaseDate,
+          : 'https://ih1.redbubble.net/image.1893341687.8294/fposter,small,wall_texture,product,750x1000.jpg',
+      releaseDate: moviedb.releaseDate!,
       title: moviedb.title,
       video: moviedb.video,
       voteAverage: moviedb.voteAverage,
@@ -47,7 +47,7 @@ class MovieMapper {
       /// Validamos si el backdroppath no viene vacio para concatenar el id
       /// de la imagen proveniente de la respuesta con el endpoint
       backdropPath: (moviedb.backdropPath != '')
-          ? 'https://image.tmdb.org/t/p/w500${moviedb.backdropPath}'
+          ? 'https://image.tmdb.org/t/p/original${moviedb.backdropPath}'
           : 'https://ih1.redbubble.net/image.1893341687.8294/fposter,small,wall_texture,product,750x1000.jpg',
 
       /// Tomamos cada nombre de género al que pertenece la película y lo
