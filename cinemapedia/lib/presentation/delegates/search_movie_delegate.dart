@@ -13,25 +13,38 @@ typedef SearchMoviesCallback = Future<List<Movie>> Function(String query);
 class SearchMovieDelegate extends SearchDelegate<Movie?> {
   // Creamos los atributos
   final SearchMoviesCallback searchMovie;
+  List<Movie> initialMovies;
 
   /// Utilizamos un StreamController para tener acceso al listener de eventos
   /// se utiliza el broadcast cuando no se sabe cuántos widgets están escuchando
+  /// Va a tener la lista de películas en el stream
   StreamController<List<Movie>> debouncedMovies = StreamController.broadcast();
+
+  // Creamos un controlador booleano para determinar si se están buscando peliculas
+  StreamController<bool> isLoadingStream = StreamController.broadcast();
 
   /// Creamos un timer para controlar el flujo de peticiones, de manera que se
   /// realicen cuando el usuario deja de escribir por un tiempo determinado
   Timer? _debounceTimer;
 
   // Creamos el constructor
-  SearchMovieDelegate({required this.searchMovie});
+  SearchMovieDelegate({
+    required this.searchMovie,
+    // Inicializamos las peliculas iniciales con una lista vacia
+    this.initialMovies = const [],
+  });
 
   // Creamos un método para limpiar todas las instancias de Streams de memoria
   void clearStreams() {
     debouncedMovies.close();
+    isLoadingStream.close();
   }
 
   // Creamos un método encargado de emitir el resultado de las películas
   void _onQueryChanged(String query) {
+    // Tan pronto la persona empiece a escribir, emitimos un valor a la bandera
+    isLoadingStream.add(true);
+
     /// Si el timer está activo, se cancela.
     /// Es decir, si el usuario va cambiando el query, el timer se cancela para
     /// que no se hagan peticiones mientras se está escribiendo
@@ -40,16 +53,45 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
     /// Inicializamos el timer con una duración de 500 milisegundos, posterior
     /// a este tiempo es cuando se realiza la petición.
     _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
-      // Si el query está vacio, no hacemos peticion http, y retornamos una lista vacia
-      if (query.isEmpty) {
-        debouncedMovies.add([]);
-        return;
-      }
-
       // Si hay algún valor en el query, hacemos la petición
       final movies = await searchMovie(query);
       debouncedMovies.add(movies);
+      // Asignamos las películas encontradas a la variable
+      initialMovies = movies;
+      // Luego de que se reflejen los resultados, vuelve a cambiar la bandera
+      isLoadingStream.add(false);
     });
+  }
+
+  // Creamos un método que va a retornar el widget del listado de películas
+  Widget _buildResultsAndSuggestions() {
+    return StreamBuilder(
+      // Mostramos el listado de películas que estén en memoria
+      initialData: initialMovies,
+      stream: debouncedMovies.stream,
+      builder: (context, snapshot) {
+        final List<Movie> movies = snapshot.data ?? [];
+        // Usamos un ListView para renderizar los resultados
+        return ListView.builder(
+          itemCount: movies.length,
+          itemBuilder: (context, index) {
+            final Movie movie = movies[index];
+
+            /// Renderizamos la película y mandamos la función close como referencia
+            /// para regresar de la búsqueda con argumentos al seleccionar una película
+            return _MovieSearchItem(
+              movie: movie,
+              onMovieSelected: (context, movie) {
+                // Limpiamos los streams
+                clearStreams();
+                // Volvemos con argumento para pasar a MovieDetails si hay película
+                close(context, movie);
+              },
+            );
+          },
+        );
+      },
+    );
   }
 
   // Sobreescribimos el String del hint label;
@@ -61,16 +103,39 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   @override
   List<Widget>? buildActions(Object context) {
     return [
-      FadeIn(
-        // Animamos el botón para qe solo salga cuando hay valor en el query
-        animate: query.isNotEmpty,
-        duration: const Duration(milliseconds: 200),
-        child: IconButton(
-          /// Actualizamos el query (palabra reservada del delegate) a un String vacio
-          /// para limpiar la búsqueda.
-          onPressed: () => query = '',
-          icon: const Icon(Icons.clear_rounded),
-        ),
+      // Creamos un streamBuilder para trabajar con el isLoading controller
+      StreamBuilder(
+        initialData: false,
+        stream: isLoadingStream.stream,
+        builder: (context, snapshot) {
+          // Si la bandera es verdadera, indicamos el progreso de carga
+          if (snapshot.data ?? false) {
+            return SpinPerfect(
+              duration: const Duration(seconds: 5),
+              infinite: true,
+              spins: 10,
+              child: IconButton(
+                /// Actualizamos el query (palabra reservada del delegate) a un String vacio
+                /// para limpiar la búsqueda.
+                onPressed: () => query = '',
+                icon: const Icon(Icons.refresh),
+              ),
+            );
+          }
+
+          // Si la bandera es falsa, mostramos el icono de limpieza
+          return FadeIn(
+            // Animamos el botón para qe solo salga cuando hay valor en el query
+            animate: query.isNotEmpty,
+            duration: const Duration(milliseconds: 200),
+            child: IconButton(
+              /// Actualizamos el query (palabra reservada del delegate) a un String vacio
+              /// para limpiar la búsqueda.
+              onPressed: () => query = '',
+              icon: const Icon(Icons.clear_rounded),
+            ),
+          );
+        },
       ),
     ];
   }
@@ -97,43 +162,21 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   // El ListView que se muestra al hacer una consulta
   @override
   Widget buildResults(BuildContext context) {
-    return const Text('BuildResults');
+    // Mostramos la lista de resultados
+    return _buildResultsAndSuggestions();
   }
 
   // Construir sugerencias
-  // Widget que se construye al inicializar la búsqueda
+  /// Widget que se construye al inicializar la búsqueda, va llamando a una función
+  /// mientras se va actualizando el query
   @override
   Widget buildSuggestions(BuildContext context) {
     /// Llamamos a la función de control de peticiones cada que se haga
     /// un cambio en el query
     _onQueryChanged(query);
 
-    // Usamos un StreamBuilder para trabajar con la función
-    return StreamBuilder(
-      stream: debouncedMovies.stream,
-      builder: (context, snapshot) {
-        final List<Movie> movies = snapshot.data ?? [];
-        // Usamos un ListView para renderizar los resultados
-        return ListView.builder(
-          itemCount: movies.length,
-          itemBuilder: (context, index) {
-            final Movie movie = movies[index];
-
-            /// Renderizamos la película y mandamos la función close como referencia
-            /// para regresar de la búsqueda con argumentos al seleccionar una película
-            return _MovieSearchItem(
-              movie: movie,
-              onMovieSelected: (context, movie) {
-                // Limpiamos los streams
-                clearStreams();
-                // Volvemos con argumento para pasar a MovieDetails si hay película
-                close(context, movie);
-              },
-            );
-          },
-        );
-      },
-    );
+    // Mostramos la lista de sugerencias
+    return _buildResultsAndSuggestions();
   }
 }
 
