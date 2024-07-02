@@ -141,4 +141,24 @@ class MoviedbDatasource extends MoviesDatasource {
 
     return movie;
   }
+
+  @override
+  Future<List<Movie>> searchMovies(String query) async {
+    if (query.isEmpty) {
+      // Si en la búsqueda está vacía, retornamos un arreglo vacío
+      return [];
+    } else {
+      // Por otro lado, si la búsqueda no está vacía hacemos la petición
+      /// Creamos la variable response donde se va a guardar la respuesta
+      /// de la petición HTTP al endpoint de búsqueda de películas
+      final response = await dio.get(
+        '/search/movie',
+        queryParameters: {
+          'query': query,
+        },
+      );
+
+      return _jsonToMovies(response.data);
+    }
+  }
 }

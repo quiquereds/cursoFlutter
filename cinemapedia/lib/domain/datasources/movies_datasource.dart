@@ -23,4 +23,7 @@ abstract class MoviesDatasource {
 
   // Método para obtener los detalles de la película
   Future<Movie> getMovieByID(String id);
+
+  // Método para la búsqueda de películas
+  Future<List<Movie>> searchMovies(String query);
 }
