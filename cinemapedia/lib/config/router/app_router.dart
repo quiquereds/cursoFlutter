@@ -29,8 +29,9 @@ final appRouter = GoRouter(
             // La vista raíz a mostrar en el primer tab
             GoRoute(
               path: '/',
+              name: HomeScreen.name,
               builder: (context, state) => const HomeView(),
-              routes: <RouteBase>[
+              routes: const <RouteBase>[
                 /// Configuración de las rutas hijas, la navegación a ellas va a cubrir
                 /// la vista raíz, pero no el shell de la aplicación (barra de navegación)
                 ///
@@ -39,16 +40,17 @@ final appRouter = GoRouter(
                 /// el URL, de no configurar estas rutas, el botón para regresar a
                 /// inicio no saldría en la interfaz y volvería confusa la navegación
                 /// para el usuario.
-                GoRoute(
-                  // El :id representa un parámetro
-                  path: 'movie/:id',
-                  name: MovieScreen.name,
-                  builder: (context, state) {
-                    // Obtenemos el ID de la película a través del estado
-                    final movieID = state.pathParameters['id'] ?? 'no-id';
-                    return MovieScreen(movieId: movieID);
-                  },
-                ),
+                ///
+                // GoRoute(
+
+                //   path: 'movie/:id',
+                //   name: MovieScreen.name,
+                //   builder: (context, state) {
+
+                //     final movieID = state.pathParameters['id'] ?? 'no-id';
+                //     return MovieScreen(movieId: movieID);
+                //   },
+                // ),
               ],
             ),
           ],
@@ -69,11 +71,25 @@ final appRouter = GoRouter(
           routes: <RouteBase>[
             GoRoute(
               path: '/favorites',
+              name: FavoritesView.name,
               builder: (context, state) => const FavoritesView(),
             )
           ],
         ),
       ],
-    )
+    ),
+
+    /// Configuración de la pantalla MovieScreen fuera del ShellRoute para no mostrar
+    /// la barra de navegación
+    GoRoute(
+      // El :id representa un parámetro
+      path: '/movie/:id',
+      name: MovieScreen.name,
+      builder: (context, state) {
+        // Obtenemos el ID de la película a través del estado
+        final movieID = state.pathParameters['id'] ?? 'no-id';
+        return MovieScreen(movieId: movieID);
+      },
+    ),
   ],
 );
