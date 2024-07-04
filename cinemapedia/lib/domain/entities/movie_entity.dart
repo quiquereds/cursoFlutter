@@ -1,8 +1,20 @@
-// Entidad de película
+import 'package:isar/isar.dart';
 
+// Creamos un part para la generación de código de la colección (IsarDB)
+// con el comando 'dart run build_runner build'
+part 'movie_entity.g.dart';
+
+// Entidad de película
 /// Regla de negocio de la estructura de datos de películas que
 /// va a tener la aplicación
+
+@collection // <- Anotamos la clase en una colección para trabajar con IsarDB
 class Movie {
+  // Creamos un identificador único para la base de datos de Isar
+  // Lo marcamos como opcional para que Isar gestione el valor y el incremento por
+  // defecto
+  Id? isarId = Isar.autoIncrement;
+
   // Atributos
   final bool adult;
   final String backdropPath;
