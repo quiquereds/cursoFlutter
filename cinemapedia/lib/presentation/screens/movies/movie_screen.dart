@@ -134,8 +134,6 @@ class _MovieDetails extends StatelessWidget {
 
         // * Actores de la película
         _ActorsByMovie(movieId: movie.id.toString()),
-
-        // TODO: Actores de la película
         const SizedBox(height: 20)
       ],
     );
@@ -247,6 +245,15 @@ class _CustomSliverAppBar extends StatelessWidget {
       // Definimos la altura ocupando el 70% del dispositivo
       expandedHeight: size.height * 0.4,
       foregroundColor: Colors.white,
+      // Listado de Widgets de acciones (iconos a la derecha)
+      actions: [
+        IconButton(
+          onPressed: () {
+            // TODO: Realizar el toggle
+          },
+          icon: const Icon(Icons.favorite_border),
+        ),
+      ],
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         title: Text(
@@ -272,32 +279,60 @@ class _CustomSliverAppBar extends StatelessWidget {
                 },
               ),
             ),
-            // Gradiente de imagen
-            const SizedBox.expand(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: [0.7, 1.0],
-                    colors: [Colors.transparent, Colors.black87],
-                  ),
-                ),
-              ),
+            // Gradiente de icono favoritos
+            const _CustomGradient(
+              gradientBegin: Alignment.topRight,
+              gradientEnd: Alignment.bottomLeft,
+              stops: [0.0, 0.2],
+              colors: [
+                Colors.black54,
+                Colors.transparent,
+              ],
             ),
-            // Gradiente de flecha
-            const SizedBox.expand(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    stops: [0.0, 0.3],
-                    colors: [Colors.black87, Colors.transparent],
-                  ),
-                ),
-              ),
-            )
+            // Gradiente de imagen
+            const _CustomGradient(
+              gradientBegin: Alignment.topCenter,
+              gradientEnd: Alignment.bottomCenter,
+              stops: [0.8, 1.0],
+              colors: [Colors.transparent, Colors.black54],
+            ),
+            // Gradiente icono de flecha
+            const _CustomGradient(
+              gradientBegin: Alignment.topLeft,
+              stops: [0.0, 0.3],
+              colors: [Colors.black87, Colors.transparent],
+            ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CustomGradient extends StatelessWidget {
+  final AlignmentGeometry gradientBegin;
+  final AlignmentGeometry gradientEnd;
+  final List<double>? stops;
+  final List<Color> colors;
+
+  const _CustomGradient({
+    this.gradientBegin = Alignment.centerLeft,
+    this.gradientEnd = Alignment.centerRight,
+    this.stops,
+    required this.colors,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.expand(
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: gradientBegin,
+            end: gradientEnd,
+            stops: stops!,
+            colors: colors,
+          ),
         ),
       ),
     );
