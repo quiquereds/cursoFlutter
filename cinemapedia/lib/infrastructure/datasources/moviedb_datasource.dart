@@ -163,7 +163,7 @@ class MoviedbDatasource extends MoviesDatasource {
   }
 
   @override
-  Future<List<Movie>> getSimilarMovies(String movieId) async {
+  Future<List<Movie>> getSimilarMovies(int movieId) async {
     /// Creamos la variable response donde se va a guardar la respuesta
     /// de la petición HTTP al endpoint similar.
     final response = await dio.get(

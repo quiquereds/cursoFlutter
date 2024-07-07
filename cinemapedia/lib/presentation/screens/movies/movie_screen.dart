@@ -94,8 +94,13 @@ class _MovieDetails extends StatelessWidget {
         //* Géneros de la película
         _Genres(movie: movie),
 
-        // * Actores de la película
+        //* Actores de la película
         ActorsByMovie(movieId: movie.id.toString()),
+
+        const SizedBox(height: 20),
+
+        //* Películas similares
+        SimilarMovies(movieId: movie.id),
       ],
     );
   }

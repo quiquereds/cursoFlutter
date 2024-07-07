@@ -28,5 +28,5 @@ abstract class MoviesDatasource {
   Future<List<Movie>> searchMovies(String query);
 
   // Método para obtener las películas relacionadas de una película
-  Future<List<Movie>> getSimilarMovies(String movieId);
+  Future<List<Movie>> getSimilarMovies(int movieId);
 }
