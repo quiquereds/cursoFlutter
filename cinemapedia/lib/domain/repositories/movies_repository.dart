@@ -21,4 +21,7 @@ abstract class MoviesRepository {
 
   // Método para la búsqueda de películas
   Future<List<Movie>> searchMovies(String query);
+
+  // Método para obtener las películas relacionadas de una película
+  Future<List<Movie>> getSimilarMovies(String movieId);
 }

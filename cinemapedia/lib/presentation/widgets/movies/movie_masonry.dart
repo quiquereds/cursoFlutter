@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:cinemapedia/domain/entities/movie_entity.dart';
 import 'package:cinemapedia/presentation/providers/providers.dart';
@@ -99,14 +101,28 @@ class MoviePosterLink extends ConsumerWidget {
     // Tomamos la instancia del FutureProvider (isFavoriteProvider)
     final isFavoriteFuture = ref.watch(isFavoriteProvider(movie.id));
 
+    // Creamos una instancia de Math Random
+    final random = Random();
+
     return FadeInUp(
+      // Usamos una instancia random para aleatorizar la animación de entrada
+      // El valor es >= 80 y <= 180
+      from: random.nextInt(100) + 80,
+      delay: Duration(milliseconds: random.nextInt(450) + 0),
       child: GestureDetector(
         onTap: () => context.push('/movie/${movie.id}'),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(15),
           child: Stack(
             children: [
-              Image.network(movie.posterPath),
+              // Shimmer
+              FadeInImage(
+                height: 220,
+                fit: BoxFit.cover,
+                placeholder:
+                    const AssetImage('lib/assets/loaders/shimmerEffect.gif'),
+                image: NetworkImage(movie.posterPath),
+              ),
               Align(
                 alignment: Alignment.topRight,
                 child: IconButton.filledTonal(

@@ -19,7 +19,13 @@ class ActorsByMovie extends ConsumerWidget {
 
     // Mientras no esté la película, mostramos un indicador de carga
     if (actorsByMovie[movieId] == null) {
-      return const CircularProgressIndicator();
+      return Container(
+        height: 100,
+        margin: const EdgeInsets.only(bottom: 50),
+        child: const Center(
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+      );
     }
 
     return Padding(
