@@ -54,7 +54,7 @@ class HomeViewState extends ConsumerState<HomeView> {
         const SliverAppBar(
           stretch: true,
           floating: true,
-          backgroundColor: Colors.white,
+          //backgroundColor: Colors.white,
           flexibleSpace: FlexibleSpaceBar(
             title: CustomAppbar(),
             // Usamos el TitlePadding para quitar el espacio a la izquierda
@@ -70,7 +70,7 @@ class HomeViewState extends ConsumerState<HomeView> {
                   MoviesSlideshow(movies: slideshowMovies),
                   // Horizontal ListView de las películas en cartelera
                   MovieHorizontalListview(
-                    title: 'En cartelera',
+                    title: 'En cartelera 🍿',
                     subtitle: 'Jueves 20',
                     movies: nowPlayingMovies,
                     loadNextPage: () {
@@ -81,7 +81,7 @@ class HomeViewState extends ConsumerState<HomeView> {
                   ),
 
                   MovieHorizontalListview(
-                    title: 'Próximamente',
+                    title: 'Próximamente 🫣',
                     subtitle: 'En este mes',
                     movies: upcomingMovies,
                     loadNextPage: () {
@@ -90,7 +90,7 @@ class HomeViewState extends ConsumerState<HomeView> {
                   ),
 
                   MovieHorizontalListview(
-                    title: 'Populares',
+                    title: 'Populares ⭐',
                     movies: popularMovies,
                     loadNextPage: () {
                       ref.read(popularMoviesProvider.notifier).loadNextPage();
@@ -98,7 +98,7 @@ class HomeViewState extends ConsumerState<HomeView> {
                   ),
 
                   MovieHorizontalListview(
-                    title: 'Mejor calificadas',
+                    title: 'Mejor calificadas 🏆',
                     subtitle: 'Desde siempre',
                     movies: topRatedMovies,
                     loadNextPage: () {

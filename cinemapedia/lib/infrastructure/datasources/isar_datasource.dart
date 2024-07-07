@@ -69,10 +69,12 @@ class IsarDatasource extends LocalStorageDatasource {
     if (favoriteMovie != null) {
       // Si la película está dentro de la base de datos local, se elimina (delete)
       // Se utiliza isarID porque es un valor único del registro en la colección
-      isar.writeTxnSync(() => isar.movies.deleteSync(favoriteMovie.isarId!));
+      return isar
+          .writeTxnSync(() => isar.movies.deleteSync(favoriteMovie.isarId!));
     }
+
     // Caso contrario, se añade la película a la colección (insert)
-    isar.writeTxnSync(() => isar.movies.putSync(movie));
+    return isar.writeTxnSync(() => isar.movies.putSync(movie));
   }
 
   @override

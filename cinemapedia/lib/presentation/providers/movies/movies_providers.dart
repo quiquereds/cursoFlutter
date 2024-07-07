@@ -84,7 +84,7 @@ class MoviesNotifier extends StateNotifier<List<Movie>> {
     // Llamamos a la función de caso de uso
     final List<Movie> movies = await fetchMoreMovies(page: currentPage);
 
-    // Reemplazamos el estado por uno nuevo
+    // Hacemos un spread del estado y listado anterior para sumar el nuevo
     state = [...state, ...movies];
 
     // Damos un tiempo a que las películas se renderizen

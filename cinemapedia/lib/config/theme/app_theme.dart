@@ -2,14 +2,27 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   ThemeData getTheme() => ThemeData(
+        brightness: Brightness.dark,
         // Usamos un color hexadecimal
-        colorSchemeSeed: const Color(0xFF2062F5),
+        colorSchemeSeed: const Color(0xFF135CC9),
         // Definimos las fuentes
         fontFamily: 'Gilroy',
+        // Tema de los textos
         textTheme: const TextTheme(
-          titleLarge: TextStyle(fontWeight: FontWeight.bold),
-          titleMedium: TextStyle(fontWeight: FontWeight.bold),
-          titleSmall: TextStyle(fontWeight: FontWeight.bold),
+          titleLarge: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          titleMedium: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          titleSmall: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
+        // Configuración de colores
+        scaffoldBackgroundColor: const Color(0xFF0F0F16),
       );
 }
