@@ -109,24 +109,15 @@ class _Slide extends StatelessWidget {
             width: 150,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(15),
-              child: Image.network(
-                movie.posterPath,
-                width: 150,
-                fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress != null) {
-                    return const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    );
-                  }
-
-                  return GestureDetector(
-                    // Utilizamos la navegación mediante ID
-                    onTap: () => context.push('/movie/${movie.id}'),
-                    child: FadeIn(child: child),
-                  );
-                },
+              child: GestureDetector(
+                onTap: () => context.push('/movie/${movie.id}'),
+                child: FadeInImage(
+                  height: 220,
+                  fit: BoxFit.cover,
+                  placeholder:
+                      const AssetImage('lib/assets/loaders/shimmerEffect.gif'),
+                  image: NetworkImage(movie.posterPath),
+                ),
               ),
             ),
           ),
