@@ -45,7 +45,6 @@ class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
       // Determinamos si nos encontramos cerca del scroll maxima
       if (currentPosition + 200 >= maxScroll) {
         // Mandamos a llamar la función
-        print('LoadNextPage');
         widget.loadNextPage!();
       }
     });
@@ -188,7 +187,7 @@ class _Title extends StatelessWidget {
       // Creamos separación vertical entre widgets
       padding: const EdgeInsets.only(top: 10),
       // Creamos un margen para que el hijo no esté pegado al borde
-      margin: const EdgeInsets.symmetric(horizontal: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
       child: Row(
         children: [
           // Mostramos el título si existe
