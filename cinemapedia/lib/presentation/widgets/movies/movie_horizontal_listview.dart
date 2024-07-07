@@ -133,7 +133,6 @@ class _Slide extends StatelessWidget {
           ),
           //* Rating
           MovieRating(
-            popularity: movie.popularity,
             voteAverage: movie.voteAverage,
           )
         ],

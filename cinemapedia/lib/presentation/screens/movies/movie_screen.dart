@@ -83,61 +83,98 @@ class _MovieDetails extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        //* Descripción de la película
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Imagen de la pelicula
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.network(movie.posterPath, width: size.width * 0.3),
-              ),
-              const SizedBox(width: 10),
-              // Descripción
-              SizedBox(
-                width: (size.width - 40) * 0.7,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      movie.title,
-                      style: textStyleTheme.titleLarge,
-                    ),
-                    Text(
-                      movie.overview,
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
+        //* Título, descripción y rating de la película
+        _TitleAndOverview(
+          movie: movie,
+          size: size,
+          textStyleTheme: textStyleTheme,
         ),
+
         //* Géneros de la película
-        Padding(
-          padding: const EdgeInsets.all(8),
-          child: Wrap(
-            children: [
-              // Barremos todos los generos de la película para hacerlos widget
-              ...movie.genreIds.map(
-                (genre) => Container(
-                  margin: const EdgeInsets.only(right: 10),
-                  child: Chip(
-                    label: Text(genre),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+        _Genres(movie: movie),
 
         // * Actores de la película
         ActorsByMovie(movieId: movie.id.toString()),
       ],
+    );
+  }
+}
+
+class _Genres extends StatelessWidget {
+  const _Genres({
+    required this.movie,
+  });
+
+  final Movie movie;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: Wrap(
+        children: [
+          // Barremos todos los generos de la película para hacerlos widget
+          ...movie.genreIds.map(
+            (genre) => Container(
+              margin: const EdgeInsets.only(right: 10),
+              child: Chip(
+                label: Text(genre),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TitleAndOverview extends StatelessWidget {
+  const _TitleAndOverview({
+    required this.movie,
+    required this.size,
+    required this.textStyleTheme,
+  });
+
+  final Movie movie;
+  final Size size;
+  final TextTheme textStyleTheme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Imagen de la pelicula
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.network(movie.posterPath, width: size.width * 0.3),
+          ),
+          const SizedBox(width: 10),
+          // Descripción
+          SizedBox(
+            width: (size.width - 40) * 0.7,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  movie.title,
+                  style: textStyleTheme.titleLarge,
+                ),
+                Text(
+                  movie.overview,
+                ),
+                const SizedBox(height: 20),
+                MovieRating(voteAverage: movie.voteAverage)
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

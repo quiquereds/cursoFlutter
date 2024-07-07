@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 
 class MovieRating extends StatelessWidget {
   final double voteAverage;
-  final double popularity;
 
   const MovieRating({
     super.key,
     required this.voteAverage,
-    required this.popularity,
   });
 
   @override
@@ -18,7 +16,7 @@ class MovieRating extends StatelessWidget {
     return SizedBox(
       width: 150,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Icon(
             Icons.star_half_sharp,
@@ -30,11 +28,6 @@ class MovieRating extends StatelessWidget {
             style: textStyleTheme.bodyMedium
                 ?.copyWith(color: Colors.yellow.shade800),
           ),
-          const Spacer(),
-          Text(
-            HumanFormats.number(popularity),
-            style: textStyleTheme.bodySmall,
-          )
         ],
       ),
     );
