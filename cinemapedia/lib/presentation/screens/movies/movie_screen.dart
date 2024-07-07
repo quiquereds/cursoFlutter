@@ -5,6 +5,7 @@ import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 
+// * Pantalla de detalles de la película
 class MovieScreen extends ConsumerStatefulWidget {
   static const String name = 'movie-screen';
 
@@ -66,6 +67,7 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
   }
 }
 
+// * Cuerpo de la pantalla de detalles (descripcion, generos, actores)
 class _MovieDetails extends StatelessWidget {
   final Movie movie;
 
@@ -140,6 +142,7 @@ class _MovieDetails extends StatelessWidget {
   }
 }
 
+// * Widget de listado de actores
 class _ActorsByMovie extends ConsumerWidget {
   final String movieId;
 
@@ -230,15 +233,22 @@ class _ActorsByMovie extends ConsumerWidget {
   }
 }
 
-class _CustomSliverAppBar extends StatelessWidget {
+// * SliverAppBar (Background, Botones de flecha y favoritos)
+class _CustomSliverAppBar extends ConsumerWidget {
   final Movie movie;
 
   const _CustomSliverAppBar({required this.movie});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // Obtenemos las dimesiones del dispositivo
     final size = MediaQuery.of(context).size;
+
+    // Obtenemos el color del scaffold
+    final scaffoldBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
+
+    // Tomamos la instancia del FutureProvider (isFavoriteProvider)
+    final isFavoriteFuture = ref.watch(isFavoriteProvider(movie.id));
 
     return SliverAppBar(
       backgroundColor: Colors.black,
@@ -248,10 +258,29 @@ class _CustomSliverAppBar extends StatelessWidget {
       // Listado de Widgets de acciones (iconos a la derecha)
       actions: [
         IconButton(
-          onPressed: () {
-            // TODO: Realizar el toggle
+          onPressed: () async {
+            // Llamamos a la función de toggle desde el Provider
+            // await ref
+            //     .read(localStorageRepositoryProvider)
+            //     .toggleFavorite(movie);
+            await ref
+                .read(favoriteMoviesProvider.notifier)
+                .toggleFavorite(movie);
+
+            // Invalidamos el provider para que se confirme el valor
+            ref.invalidate(isFavoriteProvider(movie.id));
           },
-          icon: const Icon(Icons.favorite_border),
+
+          /// Usamos el isFavoriteFuture con el helper when para determinar el widget
+          icon: isFavoriteFuture.when(
+            // Cuando se obtiene el valor del Future mostramos un ícono u otro
+            data: (isFavorite) => isFavorite
+                ? const Icon(Icons.favorite, color: Colors.red)
+                : const Icon(Icons.favorite_border),
+            error: (_, __) => throw UnimplementedError(),
+            // Mientras se resuelve el Future mostramos un círculo de carga
+            loading: () => const CircularProgressIndicator(),
+          ),
         ),
       ],
       flexibleSpace: FlexibleSpaceBar(
@@ -279,6 +308,7 @@ class _CustomSliverAppBar extends StatelessWidget {
                 },
               ),
             ),
+
             // Gradiente de icono favoritos
             const _CustomGradient(
               gradientBegin: Alignment.topRight,
@@ -289,18 +319,26 @@ class _CustomSliverAppBar extends StatelessWidget {
                 Colors.transparent,
               ],
             ),
+
             // Gradiente de imagen
-            const _CustomGradient(
+            _CustomGradient(
               gradientBegin: Alignment.topCenter,
               gradientEnd: Alignment.bottomCenter,
-              stops: [0.8, 1.0],
-              colors: [Colors.transparent, Colors.black54],
+              stops: const [0.4, 1.0],
+              colors: [
+                Colors.transparent,
+                scaffoldBackgroundColor,
+              ],
             ),
+
             // Gradiente icono de flecha
             const _CustomGradient(
               gradientBegin: Alignment.topLeft,
               stops: [0.0, 0.3],
-              colors: [Colors.black87, Colors.transparent],
+              colors: [
+                Colors.black87,
+                Colors.transparent,
+              ],
             ),
           ],
         ),
@@ -309,6 +347,7 @@ class _CustomSliverAppBar extends StatelessWidget {
   }
 }
 
+// * Widget personalizado de gradiente
 class _CustomGradient extends StatelessWidget {
   final AlignmentGeometry gradientBegin;
   final AlignmentGeometry gradientEnd;
