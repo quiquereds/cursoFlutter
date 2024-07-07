@@ -166,16 +166,21 @@ class _TitleAndOverview extends StatelessWidget {
                   movie.title,
                   style: textStyleTheme.titleLarge,
                 ),
+                if (movie.releaseDate != null)
+                  Row(
+                    children: [
+                      const Text('Estreno:',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(width: 5),
+                      Text(HumanFormats.shortDate(movie.releaseDate!))
+                    ],
+                  ),
+                const SizedBox(height: 10),
                 Text(
                   movie.overview,
                 ),
                 const SizedBox(height: 20),
                 MovieRating(voteAverage: movie.voteAverage),
-                const SizedBox(height: 10),
-                if (movie.releaseDate != null)
-                  Text(
-                    'Fecha de estreno: \n${HumanFormats.shortDate(movie.releaseDate!)}',
-                  )
               ],
             ),
           ),
