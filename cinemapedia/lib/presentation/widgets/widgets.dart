@@ -7,3 +7,4 @@ export 'shared/custom_navbar.dart';
 export 'shared/full_screen_loader.dart';
 
 export 'movies/movie_masonry.dart';
+export 'movies/movie_rating.dart';

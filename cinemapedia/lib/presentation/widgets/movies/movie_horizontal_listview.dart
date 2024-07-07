@@ -1,6 +1,6 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:cinemapedia/domain/entities/movie_entity.dart';
+import 'package:cinemapedia/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -141,28 +141,9 @@ class _Slide extends StatelessWidget {
             ),
           ),
           //* Rating
-          SizedBox(
-            width: 150,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.star_half_sharp,
-                  color: Colors.yellow.shade800,
-                ),
-                const SizedBox(width: 3),
-                Text(
-                  HumanFormats.number(movie.voteAverage),
-                  style: textStyleTheme.bodyMedium
-                      ?.copyWith(color: Colors.yellow.shade800),
-                ),
-                const Spacer(),
-                Text(
-                  HumanFormats.number(movie.popularity),
-                  style: textStyleTheme.bodySmall,
-                )
-              ],
-            ),
+          MovieRating(
+            popularity: movie.popularity,
+            voteAverage: movie.voteAverage,
           )
         ],
       ),

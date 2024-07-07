@@ -84,7 +84,7 @@ class _MovieDetails extends StatelessWidget {
       children: [
         //* Descripción de la película
         Padding(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -136,7 +136,6 @@ class _MovieDetails extends StatelessWidget {
 
         // * Actores de la película
         _ActorsByMovie(movieId: movie.id.toString()),
-        const SizedBox(height: 20)
       ],
     );
   }
