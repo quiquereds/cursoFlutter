@@ -31,7 +31,7 @@ class ActorsByMovie extends ConsumerWidget {
           scrollDirection: Axis.horizontal,
           itemCount: actorsByMovie[movieId]!.length,
           itemBuilder: (context, index) {
-            final actorsList = actorsByMovie[movieId]![index];
+            final actor = actorsByMovie[movieId]![index];
 
             return Row(
               children: [
@@ -50,10 +50,12 @@ class ActorsByMovie extends ConsumerWidget {
                               topLeft: Radius.circular(20),
                               bottomLeft: Radius.circular(20),
                             ),
-                            child: Image.network(
-                              actorsList.profilePath,
+                            child: FadeInImage(
                               width: 100,
                               fit: BoxFit.cover,
+                              placeholder: const AssetImage(
+                                  'lib/assets/loaders/shimmerEffect.gif'),
+                              image: NetworkImage(actor.profilePath),
                             ),
                           ),
                           const SizedBox(width: 20),
@@ -65,13 +67,13 @@ class ActorsByMovie extends ConsumerWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  actorsList.name,
+                                  actor.name,
                                   maxLines: 2,
                                   style: textStyleTheme.titleMedium!.copyWith(
                                       overflow: TextOverflow.ellipsis),
                                 ),
                                 Text(
-                                  actorsList.character!,
+                                  actor.character!,
                                   style: textStyleTheme.bodyMedium!.copyWith(
                                       overflow: TextOverflow.ellipsis),
                                   maxLines: 2,
