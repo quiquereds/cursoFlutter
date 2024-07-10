@@ -13,11 +13,13 @@ import 'package:go_router/go_router.dart';
 class MovieMasonry extends StatefulWidget {
   final List<Movie> movies;
   final VoidCallback? loadNextPage;
+  final bool showFavoriteButton;
 
   const MovieMasonry({
     super.key,
     required this.movies,
     this.loadNextPage,
+    this.showFavoriteButton = true,
   });
 
   @override
@@ -77,13 +79,19 @@ class _MovieMasonryState extends State<MovieMasonry> {
             return Column(
               children: [
                 const SizedBox(height: 30),
-                MoviePosterLink(movie: movie),
+                MoviePosterLink(
+                  movie: movie,
+                  showFavoriteButton: widget.showFavoriteButton,
+                ),
               ],
             );
           }
 
           // Los demás indices se renderizan normal
-          return MoviePosterLink(movie: movie);
+          return MoviePosterLink(
+            movie: movie,
+            showFavoriteButton: widget.showFavoriteButton,
+          );
         },
       ),
     );
@@ -93,8 +101,10 @@ class _MovieMasonryState extends State<MovieMasonry> {
 // Contenedor del poster de la película
 class MoviePosterLink extends ConsumerWidget {
   final Movie movie;
+  final bool showFavoriteButton;
 
-  const MoviePosterLink({super.key, required this.movie});
+  const MoviePosterLink(
+      {super.key, required this.movie, required this.showFavoriteButton});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -117,36 +127,37 @@ class MoviePosterLink extends ConsumerWidget {
             children: [
               // Shimmer
               FadeInImage(
-                height: 220,
+                height: 200,
                 fit: BoxFit.cover,
                 placeholder:
                     const AssetImage('lib/assets/loaders/shimmerEffect.gif'),
                 image: NetworkImage(movie.posterPath),
               ),
-              Align(
-                alignment: Alignment.topRight,
-                child: IconButton.filledTonal(
-                  onPressed: () async {
-                    await ref
-                        .read(favoriteMoviesProvider.notifier)
-                        .toggleFavorite(movie);
+              if (showFavoriteButton)
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton.filledTonal(
+                    onPressed: () async {
+                      await ref
+                          .read(favoriteMoviesProvider.notifier)
+                          .toggleFavorite(movie);
 
-                    // Invalidamos el provider para que se confirme el valor
-                    ref.invalidate(isFavoriteProvider(movie.id));
-                  },
+                      // Invalidamos el provider para que se confirme el valor
+                      ref.invalidate(isFavoriteProvider(movie.id));
+                    },
 
-                  /// Usamos el isFavoriteFuture con el helper when para determinar el widget
-                  icon: isFavoriteFuture.when(
-                    // Cuando se obtiene el valor del Future mostramos un ícono u otro
-                    data: (isFavorite) => isFavorite
-                        ? const Icon(Icons.favorite, color: Colors.red)
-                        : const Icon(Icons.favorite_border),
-                    error: (_, __) => throw UnimplementedError(),
-                    // Mientras se resuelve el Future mostramos un círculo de carga
-                    loading: () => const CircularProgressIndicator(),
+                    /// Usamos el isFavoriteFuture con el helper when para determinar el widget
+                    icon: isFavoriteFuture.when(
+                      // Cuando se obtiene el valor del Future mostramos un ícono u otro
+                      data: (isFavorite) => isFavorite
+                          ? const Icon(Icons.favorite, color: Colors.red)
+                          : const Icon(Icons.favorite_border),
+                      error: (_, __) => throw UnimplementedError(),
+                      // Mientras se resuelve el Future mostramos un círculo de carga
+                      loading: () => const CircularProgressIndicator(),
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         ),

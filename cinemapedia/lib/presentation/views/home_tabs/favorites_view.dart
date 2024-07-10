@@ -55,7 +55,7 @@ class FavoritesViewState extends ConsumerState<FavoritesView> {
 
     // Si no hay listado de películas favoritas, se muestra un mensaje
     if (favoriteMovies.isEmpty) {
-      return CustomMessage();
+      return const CustomMessage();
     }
 
     return Scaffold(

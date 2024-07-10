@@ -1,6 +1,6 @@
 // Router de la aplicación
 import 'package:cinemapedia/presentation/screens/screens.dart';
-import 'package:cinemapedia/presentation/views/home_tabs/categories_view.dart';
+import 'package:cinemapedia/presentation/views/home_tabs/popular_view.dart';
 import 'package:cinemapedia/presentation/views/views.dart';
 import 'package:go_router/go_router.dart';
 
@@ -60,8 +60,9 @@ final appRouter = GoRouter(
         StatefulShellBranch(
           routes: <RouteBase>[
             GoRoute(
-              path: '/categories',
-              builder: (context, state) => const CategoriesView(),
+              path: '/popular',
+              name: PopularView.name,
+              builder: (context, state) => const PopularView(),
             )
           ],
         ),
