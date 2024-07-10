@@ -11,3 +11,5 @@ export 'movies/similar_movies.dart';
 export 'shared/custom_appbar.dart';
 export 'shared/custom_navbar.dart';
 export 'shared/full_screen_loader.dart';
+
+export 'videos/videos_from_movie.dart';

@@ -1,9 +1,12 @@
 import 'package:cinemapedia/config/constants/environment.dart';
 import 'package:cinemapedia/domain/datasources/movies_datasource.dart';
 import 'package:cinemapedia/domain/entities/movie_entity.dart';
+import 'package:cinemapedia/domain/entities/video_entity.dart';
 import 'package:cinemapedia/infrastructure/mappers/movie_mapper.dart';
+import 'package:cinemapedia/infrastructure/mappers/video_mapper.dart';
 import 'package:cinemapedia/infrastructure/models/moviedb/movie_details.dart';
 import 'package:cinemapedia/infrastructure/models/moviedb/moviedb_response.dart';
+import 'package:cinemapedia/infrastructure/models/moviedb/moviedb_videos.dart';
 import 'package:dio/dio.dart';
 
 /// Implementamos la clase de MoviesDatasource para obtener los datos
@@ -171,5 +174,33 @@ class MoviedbDatasource extends MoviesDatasource {
     );
 
     return _jsonToMovies(response.data);
+  }
+
+  @override
+  Future<List<Video>> getYouTubeVideos(int movieId) async {
+    // Se hace la petición al endpoint
+    final response = await dio.get('/movie/$movieId/videos');
+
+    // Se transforma la petición de Mapa a Objeto
+    final moviedbVideosResponse = MoviedbVideosResponse.fromJson(response.data);
+
+    /// Se crea una lista vacía para almacenar los Strings que pertenecen
+    /// a videos de YouTube
+    final List<Video> videos = [];
+
+    // Se recorre cada objeto obtenido
+    for (final moviedbVideo in moviedbVideosResponse.results) {
+      /// Si el objeto tiene un video de YouTube, se usa el Mapper para
+      /// transformar el resultado de la petición a la entidad de la app
+      if (moviedbVideo.site == 'YouTube') {
+        final video = VideoMapper.moviedbVideoToEntity(moviedbVideo);
+
+        // Se añade el video a la lista
+        videos.add(video);
+      }
+    }
+
+    // Se retorna la lista
+    return videos;
   }
 }

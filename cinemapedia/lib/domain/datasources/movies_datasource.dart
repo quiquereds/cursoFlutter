@@ -1,4 +1,5 @@
 import 'package:cinemapedia/domain/entities/movie_entity.dart';
+import 'package:cinemapedia/domain/entities/video_entity.dart';
 
 // Clase abstracta para no generar instancias de la misma
 
@@ -29,4 +30,7 @@ abstract class MoviesDatasource {
 
   // Método para obtener las películas relacionadas de una película
   Future<List<Movie>> getSimilarMovies(int movieId);
+
+  // Método para obtener los videos relacionados a una película
+  Future<List<Video>> getYouTubeVideos(int movieId);
 }

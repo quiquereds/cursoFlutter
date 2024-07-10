@@ -94,8 +94,15 @@ class _MovieDetails extends StatelessWidget {
         //* Géneros de la película
         _Genres(movie: movie),
 
+        const SizedBox(height: 20),
+
         //* Actores de la película
         ActorsByMovie(movieId: movie.id.toString()),
+
+        const SizedBox(height: 20),
+
+        // * Videos de la película
+        VideosFromMovie(movieId: movie.id),
 
         const SizedBox(height: 20),
 
@@ -117,21 +124,24 @@ class _Genres extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8),
-      child: Wrap(
-        children: [
-          // Barremos todos los generos de la película para hacerlos widget
-          ...movie.genreIds.map(
-            (genre) => Container(
-              margin: const EdgeInsets.only(right: 10),
-              child: Chip(
-                label: Text(genre),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+      child: SizedBox(
+        width: double.infinity,
+        child: Wrap(
+          children: [
+            // Barremos todos los generos de la película para hacerlos widget
+            ...movie.genreIds.map(
+              (genre) => Container(
+                margin: const EdgeInsets.only(right: 10),
+                child: Chip(
+                  label: Text(genre),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
