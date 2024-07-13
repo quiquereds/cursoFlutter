@@ -19,4 +19,13 @@ class HumanFormats {
     // Retornamos la fecha con el nuevo formato
     return format.format(date);
   }
+
+  // Método estático para obtener el año
+  static String getYear(DateTime date) {
+    // Creamos una instancia de DateFormat con locale en español
+    final format = DateFormat.y('es');
+
+    // Retornamos la fecha con el nuevo formato
+    return format.format(date);
+  }
 }

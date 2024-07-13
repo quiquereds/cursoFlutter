@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:animate_do/animate_do.dart';
 import 'package:cinemapedia/domain/entities/movie_entity.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
+import 'package:iconly/iconly.dart';
 
 /// Creamos un Widget para mostrar el listado de películas favoritas en un GridView
 /// estilo Masonry
@@ -134,10 +136,15 @@ class MoviePosterLink extends ConsumerWidget {
                 image: NetworkImage(movie.posterPath),
               ),
               if (showFavoriteButton)
-                Align(
-                  alignment: Alignment.topRight,
-                  child: IconButton.filledTonal(
-                    onPressed: () async {
+                Positioned(
+                  right: 6,
+                  top: 6,
+                  child: BlurredIconButton(
+                    width: 35,
+                    height: 35,
+                    blurColor: Colors.grey.shade800.withAlpha(800),
+                    borderRadius: 12,
+                    onTap: () async {
                       await ref
                           .read(favoriteMoviesProvider.notifier)
                           .toggleFavorite(movie);
@@ -145,20 +152,75 @@ class MoviePosterLink extends ConsumerWidget {
                       // Invalidamos el provider para que se confirme el valor
                       ref.invalidate(isFavoriteProvider(movie.id));
                     },
-
-                    /// Usamos el isFavoriteFuture con el helper when para determinar el widget
                     icon: isFavoriteFuture.when(
                       // Cuando se obtiene el valor del Future mostramos un ícono u otro
                       data: (isFavorite) => isFavorite
-                          ? const Icon(Icons.favorite, color: Colors.red)
-                          : const Icon(Icons.favorite_border),
+                          ? const Icon(
+                              IconlyBold.bookmark,
+                              color: Colors.yellow,
+                              size: 20,
+                            )
+                          : const Icon(
+                              IconlyLight.bookmark,
+                              size: 20,
+                            ),
                       error: (_, __) => throw UnimplementedError(),
                       // Mientras se resuelve el Future mostramos un círculo de carga
-                      loading: () => const CircularProgressIndicator(),
+                      loading: () => SpinPerfect(
+                        infinite: true,
+                        child: const Icon(
+                          Icons.refresh,
+                        ),
+                      ),
                     ),
                   ),
                 ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class BlurredIconButton extends StatelessWidget {
+  final Widget icon;
+  final double width;
+  final double height;
+  final double borderRadius;
+  final BoxShape buttonShape;
+  final Color blurColor;
+  final void Function() onTap;
+
+  const BlurredIconButton({
+    super.key,
+    required this.icon,
+    required this.width,
+    required this.height,
+    this.buttonShape = BoxShape.rectangle,
+    required this.blurColor,
+    required this.onTap,
+    required this.borderRadius,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        onTap();
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(borderRadius),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              shape: buttonShape,
+              color: blurColor,
+            ),
+            child: icon,
           ),
         ),
       ),

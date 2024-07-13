@@ -20,6 +20,7 @@ class Movie {
   final String backdropPath;
   final List<String> genreIds;
   final int id;
+  final int runtime;
   final String originalLanguage;
   final String originalTitle;
   final String overview;
@@ -37,6 +38,7 @@ class Movie {
     required this.backdropPath,
     required this.genreIds,
     required this.id,
+    required this.runtime,
     required this.originalLanguage,
     required this.originalTitle,
     required this.overview,

@@ -36,6 +36,7 @@ class MovieMapper {
       video: moviedb.video,
       voteAverage: moviedb.voteAverage,
       voteCount: moviedb.voteCount,
+      runtime: 0,
     );
   }
 
@@ -54,6 +55,7 @@ class MovieMapper {
       /// convertimos a lista
       genreIds: moviedb.genres.map((e) => e.name).toList(),
       id: moviedb.id,
+      runtime: moviedb.runtime,
       originalLanguage: moviedb.originalLanguage,
       originalTitle: moviedb.originalTitle,
       overview: moviedb.overview,

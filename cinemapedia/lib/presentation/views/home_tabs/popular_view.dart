@@ -25,7 +25,7 @@ class PopularView extends ConsumerWidget {
     return Scaffold(
       body: MovieMasonry(
         movies: popularMovies,
-        showFavoriteButton: false,
+        showFavoriteButton: true,
         loadNextPage: () =>
             ref.read(popularMoviesProvider.notifier).loadNextPage(),
       ),

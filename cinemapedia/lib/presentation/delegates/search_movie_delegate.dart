@@ -1,9 +1,13 @@
 import 'dart:async';
-
 import 'package:animate_do/animate_do.dart';
-import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:cinemapedia/domain/entities/movie_entity.dart';
+import 'package:cinemapedia/presentation/providers/providers.dart';
+import 'package:cinemapedia/presentation/widgets/movies/movie_masonry.dart';
+import 'package:cinemapedia/presentation/widgets/movies/movie_rating.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:iconly/iconly.dart';
 
 // Creamos una firma de función
 typedef SearchMoviesCallback = Future<List<Movie>> Function(String query);
@@ -118,7 +122,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
                 /// Actualizamos el query (palabra reservada del delegate) a un String vacio
                 /// para limpiar la búsqueda.
                 onPressed: () => query = '',
-                icon: const Icon(Icons.refresh),
+                icon: const Icon(Icons.refresh_rounded),
               ),
             );
           }
@@ -180,7 +184,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   }
 }
 
-class _MovieSearchItem extends StatelessWidget {
+class _MovieSearchItem extends ConsumerWidget {
   final Movie movie;
   final Function(BuildContext context, Movie movie) onMovieSelected;
 
@@ -190,10 +194,14 @@ class _MovieSearchItem extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // Hacemos una referencia al estilo de la aplicación
     final size = MediaQuery.of(context).size;
     final textStyleTheme = Theme.of(context).textTheme;
+    final colors = Theme.of(context).colorScheme;
+
+    // Tomamos la instancia del FutureProvider (isFavoriteProvider)
+    final isFavoriteFuture = ref.watch(isFavoriteProvider(movie.id));
 
     return GestureDetector(
       onTap: () {
@@ -202,55 +210,101 @@ class _MovieSearchItem extends StatelessWidget {
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        child: Row(
+        child: Column(
           children: [
-            // Imagen
-            SizedBox(
-              width: size.width * 0.3,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: Image.network(
-                  movie.posterPath,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    return FadeIn(child: child);
-                  },
-                ),
-              ),
-            ),
-            const SizedBox(width: 10),
-            // Descripcion
-            SizedBox(
-              width: size.width * 0.6,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Titulo
-                  Text(
-                    movie.title,
-                    style: textStyleTheme.titleMedium,
-                  ),
-                  // Descripción
-                  (movie.overview.length > 100)
-                      ? Text('${movie.overview.substring(0, 100)}...')
-                      : Text(movie.overview),
-                  // Rating
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.star_half_rounded,
-                        color: Colors.yellow.shade800,
+            Row(
+              children: [
+                // Imagen
+                Stack(
+                  children: [
+                    SizedBox(
+                      width: size.width * 0.3,
+                      height: 180,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: GestureDetector(
+                          onTap: () => context.push('/movie/${movie.id}'),
+                          child: FadeInImage(
+                            height: 220,
+                            fit: BoxFit.cover,
+                            placeholder: const AssetImage(
+                                'lib/assets/loaders/shimmerEffect.gif'),
+                            image: NetworkImage(movie.posterPath),
+                          ),
+                        ),
                       ),
-                      const SizedBox(width: 5),
+                    ),
+                    Positioned(
+                      top: 6,
+                      right: 6,
+                      child: MovieRating(voteAverage: movie.voteAverage),
+                    ),
+                    Positioned(
+                      top: 6,
+                      left: 6,
+                      child: BlurredIconButton(
+                        width: 35,
+                        height: 35,
+                        blurColor: Colors.grey.shade800.withAlpha(800),
+                        borderRadius: 12,
+                        onTap: () async {
+                          await ref
+                              .read(favoriteMoviesProvider.notifier)
+                              .toggleFavorite(movie);
+
+                          // Invalidamos el provider para que se confirme el valor
+                          ref.invalidate(isFavoriteProvider(movie.id));
+                        },
+                        icon: isFavoriteFuture.when(
+                          // Cuando se obtiene el valor del Future mostramos un ícono u otro
+                          data: (isFavorite) => isFavorite
+                              ? const Icon(
+                                  IconlyBold.bookmark,
+                                  color: Colors.yellow,
+                                  size: 20,
+                                )
+                              : const Icon(
+                                  IconlyLight.bookmark,
+                                  size: 20,
+                                ),
+                          error: (_, __) => throw UnimplementedError(),
+                          // Mientras se resuelve el Future mostramos un círculo de carga
+                          loading: () => SpinPerfect(
+                            infinite: true,
+                            child: const Icon(
+                              Icons.refresh,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 20),
+                // Descripcion
+                SizedBox(
+                  width: size.width * 0.5,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Titulo
                       Text(
-                        HumanFormats.number(movie.voteAverage),
-                        style: textStyleTheme.bodyMedium!
-                            .copyWith(color: Colors.yellow.shade900),
-                      )
+                        movie.title,
+                        maxLines: 2,
+                        style: textStyleTheme.titleMedium,
+                        overflow: TextOverflow.fade,
+                      ),
+                      // Descripción
+                      (movie.overview.length > 100)
+                          ? Text('${movie.overview.substring(0, 100)}...')
+                          : Text(movie.overview),
                     ],
-                  )
-                ],
-              ),
-            )
+                  ),
+                )
+              ],
+            ),
+            const SizedBox(height: 10),
+            Divider(color: colors.outline.withAlpha(100))
           ],
         ),
       ),

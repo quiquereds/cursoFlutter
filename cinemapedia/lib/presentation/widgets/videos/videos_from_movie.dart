@@ -46,27 +46,14 @@ class _VideosList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Referencia al tema de la aplicación
-    final textStyleTheme = Theme.of(context).textTheme;
-
     // Si no hay que mostrar
     if (videos.isEmpty) {
       return const SizedBox();
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Text('Video', style: textStyleTheme.titleLarge),
-        ),
-        const SizedBox(height: 10),
-        _YouTubeVideoPlayer(
-          youtubeId: videos.first.youtubeKey,
-          name: videos.first.name,
-        ),
-      ],
+    return _YouTubeVideoPlayer(
+      youtubeId: videos.first.youtubeKey,
+      name: videos.first.name,
     );
   }
 }
@@ -98,7 +85,7 @@ class __YouTubeVideoPlayerState extends State<_YouTubeVideoPlayer> {
       flags: const YoutubePlayerFlags(
         showLiveFullscreenButton: false,
         mute: false,
-        autoPlay: false,
+        autoPlay: true,
         disableDragSeek: false,
         loop: false,
         isLive: false,
@@ -118,13 +105,7 @@ class __YouTubeVideoPlayerState extends State<_YouTubeVideoPlayer> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(widget.name),
-          YoutubePlayer(controller: _controller),
-        ],
-      ),
+      child: YoutubePlayer(controller: _controller),
     );
   }
 }

@@ -1,8 +1,10 @@
+import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:cinemapedia/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   /// Creamos el nombre de la ruta
   static const String name = 'home-screen';
 
@@ -15,12 +17,24 @@ class HomeScreen extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Creamos una referencia al controller del nabvar
+    final bool showNavbar = ref.watch(showNavbarProvider);
+
     return Scaffold(
-      body: navigationShell,
-      bottomNavigationBar: CustomBottomNavigation(
-        // Pasamos como argumento el shell de navegación
-        navigationShell: navigationShell,
+      body: Stack(
+        children: [
+          Positioned.fill(child: navigationShell),
+          if (showNavbar)
+            Positioned(
+              bottom: 0,
+              right: 0,
+              left: 0,
+              child: CustomBottomNavigation(
+                navigationShell: navigationShell,
+              ),
+            )
+        ],
       ),
     );
   }

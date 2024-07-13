@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:cinemapedia/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +28,9 @@ class HomeViewState extends ConsumerState<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    // Obtenemos el color del scaffold
+    final scaffoldBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
+
     // Creamos una referencia al estado de las 4 listas de películas
     final bool initialLoading = ref.watch(initialLoadingProvider);
     // Si están vacias mostramos el loader
@@ -37,7 +42,6 @@ class HomeViewState extends ConsumerState<HomeView> {
     final slideshowMovies = ref.watch(moviesSlideshowProvider);
     // Creamos una referencia al estado del listado de películas
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
-
     // Creamos una referencia al estado del listado de a continuación
     final upcomingMovies = ref.watch(upcomingMoviesProvider);
     // Creamos una referencia al estado del listado de mejor votadas
@@ -50,14 +54,22 @@ class HomeViewState extends ConsumerState<HomeView> {
     /// hacia arriba
     return CustomScrollView(
       slivers: [
-        const SliverAppBar(
+        SliverAppBar(
           stretch: true,
           floating: true,
-          //backgroundColor: Colors.white,
+          backgroundColor: scaffoldBackgroundColor.withAlpha(200),
           flexibleSpace: FlexibleSpaceBar(
-            title: CustomAppbar(),
+            title: const CustomAppbar(),
             // Usamos el TitlePadding para quitar el espacio a la izquierda
             titlePadding: EdgeInsets.zero,
+            background: ClipRRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
+                  color: Colors.transparent,
+                ),
+              ),
+            ),
           ),
         ),
         SliverList(
@@ -65,12 +77,13 @@ class HomeViewState extends ConsumerState<HomeView> {
             (context, index) {
               return Column(
                 children: [
+                  const SizedBox(height: 25),
                   // Slideshow de las primeras 6 películas en cartelera
                   MoviesSlideshow(movies: slideshowMovies),
                   // Horizontal ListView de las películas en cartelera
                   MovieHorizontalListview(
                     title: 'En cartelera 🍿',
-                    subtitle: 'Jueves 20',
+                    subtitle: 'Viernes 12',
                     movies: nowPlayingMovies,
                     loadNextPage: () {
                       ref

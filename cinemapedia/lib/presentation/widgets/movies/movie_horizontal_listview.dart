@@ -1,8 +1,13 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:cinemapedia/domain/entities/movie_entity.dart';
+import 'package:cinemapedia/presentation/providers/storage/favorite_movies_provider.dart';
+import 'package:cinemapedia/presentation/providers/storage/local_storage_provider.dart';
 import 'package:cinemapedia/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:iconly/iconly.dart';
 
 class MovieHorizontalListview extends StatefulWidget {
   final List<Movie> movies;
@@ -90,14 +95,19 @@ class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
   }
 }
 
-class _Slide extends StatelessWidget {
+class _Slide extends ConsumerWidget {
   final Movie movie;
 
   const _Slide({required this.movie});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Tomamos la instancia del FutureProvider (isFavoriteProvider)
+    final isFavoriteFuture = ref.watch(isFavoriteProvider(movie.id));
+
+    // Accedemos al estilo de la aplicación
     final textStyleTheme = Theme.of(context).textTheme;
+    final colors = Theme.of(context).colorScheme;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -105,21 +115,69 @@ class _Slide extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           //* Portada de la película
-          SizedBox(
-            width: 150,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: GestureDetector(
-                onTap: () => context.push('/movie/${movie.id}'),
-                child: FadeInImage(
-                  height: 220,
-                  fit: BoxFit.cover,
-                  placeholder:
-                      const AssetImage('lib/assets/loaders/shimmerEffect.gif'),
-                  image: NetworkImage(movie.posterPath),
+          Stack(
+            children: [
+              SizedBox(
+                width: 150,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: GestureDetector(
+                    onTap: () => context.push('/movie/${movie.id}'),
+                    child: FadeInImage(
+                      height: 220,
+                      fit: BoxFit.cover,
+                      placeholder: const AssetImage(
+                          'lib/assets/loaders/shimmerEffect.gif'),
+                      image: NetworkImage(movie.posterPath),
+                    ),
+                  ),
                 ),
               ),
-            ),
+              Positioned(
+                top: 6,
+                right: 6,
+                child: MovieRating(voteAverage: movie.voteAverage),
+              ),
+              Positioned(
+                top: 6,
+                left: 6,
+                child: BlurredIconButton(
+                  width: 35,
+                  height: 35,
+                  blurColor: Colors.grey.shade800.withAlpha(800),
+                  borderRadius: 12,
+                  onTap: () async {
+                    await ref
+                        .read(favoriteMoviesProvider.notifier)
+                        .toggleFavorite(movie);
+
+                    // Invalidamos el provider para que se confirme el valor
+                    ref.invalidate(isFavoriteProvider(movie.id));
+                  },
+                  icon: isFavoriteFuture.when(
+                    // Cuando se obtiene el valor del Future mostramos un ícono u otro
+                    data: (isFavorite) => isFavorite
+                        ? const Icon(
+                            IconlyBold.bookmark,
+                            color: Colors.yellow,
+                            size: 20,
+                          )
+                        : const Icon(
+                            IconlyLight.bookmark,
+                            size: 20,
+                          ),
+                    error: (_, __) => throw UnimplementedError(),
+                    // Mientras se resuelve el Future mostramos un círculo de carga
+                    loading: () => SpinPerfect(
+                      infinite: true,
+                      child: const Icon(
+                        Icons.refresh,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 5),
           //* Título
@@ -128,13 +186,19 @@ class _Slide extends StatelessWidget {
             child: Text(
               movie.title,
               maxLines: 2,
-              style: textStyleTheme.titleSmall,
+              style: textStyleTheme.titleMedium,
             ),
           ),
-          //* Rating
-          MovieRating(
-            voteAverage: movie.voteAverage,
-          )
+          if (movie.releaseDate != null)
+            SizedBox(
+              width: 150,
+              child: Text(
+                HumanFormats.getYear(movie.releaseDate!),
+                maxLines: 2,
+                style: textStyleTheme.titleSmall!
+                    .copyWith(color: colors.inversePrimary),
+              ),
+            ),
         ],
       ),
     );

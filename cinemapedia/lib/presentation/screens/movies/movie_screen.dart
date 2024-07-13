@@ -1,11 +1,14 @@
+import 'dart:ui';
 import 'package:animate_do/animate_do.dart';
 import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:cinemapedia/domain/entities/movie_entity.dart';
 import 'package:cinemapedia/presentation/providers/movies/movie_info_provider.dart';
 import 'package:cinemapedia/presentation/providers/providers.dart';
+import 'package:cinemapedia/presentation/views/transparent_view.dart';
 import 'package:cinemapedia/presentation/widgets/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:iconly/iconly.dart';
 
 // * Pantalla de detalles de la película
 class MovieScreen extends ConsumerStatefulWidget {
@@ -51,8 +54,8 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
 
     // En cambio, si la película existe, mostramos la pantalla
     return Scaffold(
+      extendBodyBehindAppBar: true,
       body: CustomScrollView(
-        physics: const ClampingScrollPhysics(),
         slivers: [
           _CustomSliverAppBar(movie: movie),
           SliverList(
@@ -84,25 +87,17 @@ class _MovieDetails extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        //* Título, descripción y rating de la película
+        //* Título, descripción, generos y rating de la película
         _TitleAndOverview(
           movie: movie,
           size: size,
           textStyleTheme: textStyleTheme,
         ),
 
-        //* Géneros de la película
-        _Genres(movie: movie),
-
         const SizedBox(height: 20),
 
         //* Actores de la película
         ActorsByMovie(movieId: movie.id.toString()),
-
-        const SizedBox(height: 20),
-
-        // * Videos de la película
-        VideosFromMovie(movieId: movie.id),
 
         const SizedBox(height: 20),
 
@@ -122,27 +117,23 @@ class _Genres extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: SizedBox(
-        width: double.infinity,
-        child: Wrap(
-          children: [
-            // Barremos todos los generos de la película para hacerlos widget
-            ...movie.genreIds.map(
-              (genre) => Container(
-                margin: const EdgeInsets.only(right: 10),
-                child: Chip(
-                  label: Text(genre),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-              ),
+    return Wrap(
+      children: [
+        // Barremos todos los generos de la película para hacerlos widget
+        ...movie.genreIds.map(
+          (genre) => Container(
+            margin: const EdgeInsets.only(right: 10),
+            decoration: BoxDecoration(
+              color: const Color(0xFF0c2345).withAlpha(400),
+              borderRadius: BorderRadius.circular(10),
             ),
-          ],
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(genre),
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 }
@@ -160,45 +151,104 @@ class _TitleAndOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    // Obtenemos el color del scaffold
+    final scaffoldBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
+
+    return Container(
+      height: size.height * 0.7,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: NetworkImage(movie.backdropPath),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Stack(
         children: [
-          // Imagen de la pelicula
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Image.network(movie.posterPath, width: size.width * 0.3),
+          // * Gradiente superior
+          _CustomGradient(
+            gradientBegin: Alignment.bottomCenter,
+            gradientEnd: Alignment.topCenter,
+            stops: const [0.6, 1.0],
+            colors: [
+              Colors.transparent,
+              scaffoldBackgroundColor,
+            ],
           ),
-          const SizedBox(width: 10),
-          // Descripción
-          SizedBox(
-            width: (size.width - 40) * 0.7,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  movie.title,
-                  style: textStyleTheme.titleLarge,
-                ),
-                if (movie.releaseDate != null)
-                  Row(
-                    children: [
-                      const Text('Estreno:',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      const SizedBox(width: 5),
-                      Text(HumanFormats.shortDate(movie.releaseDate!))
-                    ],
+          // * Gradiente inferior
+          _CustomGradient(
+            gradientBegin: Alignment.topCenter,
+            gradientEnd: Alignment.bottomCenter,
+            stops: const [0.1, 1.0],
+            colors: [
+              Colors.transparent,
+              scaffoldBackgroundColor,
+            ],
+          ),
+          // * Botón de reprodución de video
+          Positioned(
+            top: size.height * 0.20,
+            left: size.width * 0.40,
+            child: BounceInUp(
+              child: BlurredIconButton(
+                icon: const Icon(IconlyBold.play, size: 50),
+                buttonShape: BoxShape.circle,
+                width: 80,
+                height: 80,
+                blurColor: Colors.transparent,
+                borderRadius: 40,
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TransparentView(
+                      widget: VideosFromMovie(movieId: movie.id),
+                    ),
                   ),
-                const SizedBox(height: 10),
-                Text(
-                  movie.overview,
                 ),
-                const SizedBox(height: 20),
-                MovieRating(voteAverage: movie.voteAverage),
-              ],
+              ),
             ),
           ),
+          Positioned(
+            bottom: 10,
+            child: SizedBox(
+              width: size.width,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Nombre de la película
+                    Text(
+                      movie.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.fade,
+                      style: textStyleTheme.displaySmall,
+                    ),
+                    const SizedBox(height: 10),
+                    // Año y duración
+                    Row(
+                      children: [
+                        MovieRating(voteAverage: movie.voteAverage),
+                        const SizedBox(width: 10),
+                        Text(
+                          '${HumanFormats.getYear(movie.releaseDate!)} • ${movie.runtime} min',
+                          style: textStyleTheme.bodyLarge,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 30),
+                    //* Géneros de la película
+                    _Genres(movie: movie),
+                    const SizedBox(height: 15),
+                    Text(
+                      movie.overview,
+                      maxLines: 5,
+                      overflow: TextOverflow.ellipsis,
+                    )
+                  ],
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );
@@ -213,28 +263,32 @@ class _CustomSliverAppBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Obtenemos las dimesiones del dispositivo
-    final size = MediaQuery.of(context).size;
+    // Tomamos la instancia del FutureProvider (isFavoriteProvider)
+    final isFavoriteFuture = ref.watch(isFavoriteProvider(movie.id));
 
     // Obtenemos el color del scaffold
     final scaffoldBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
 
-    // Tomamos la instancia del FutureProvider (isFavoriteProvider)
-    final isFavoriteFuture = ref.watch(isFavoriteProvider(movie.id));
-
     return SliverAppBar(
-      backgroundColor: Colors.black,
-      // Definimos la altura ocupando el 70% del dispositivo
-      expandedHeight: size.height * 0.4,
-      foregroundColor: Colors.white,
+      // Configuración del appbar
+      floating: true,
+
+      // Blur del AppBar
+      flexibleSpace: ClipRRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            color: Colors.transparent,
+          ),
+        ),
+      ),
+      backgroundColor: scaffoldBackgroundColor.withAlpha(200),
+
       // Listado de Widgets de acciones (iconos a la derecha)
       actions: [
         IconButton(
           onPressed: () async {
             // Llamamos a la función de toggle desde el Provider
-            // await ref
-            //     .read(localStorageRepositoryProvider)
-            //     .toggleFavorite(movie);
             await ref
                 .read(favoriteMoviesProvider.notifier)
                 .toggleFavorite(movie);
@@ -247,64 +301,19 @@ class _CustomSliverAppBar extends ConsumerWidget {
           icon: isFavoriteFuture.when(
             // Cuando se obtiene el valor del Future mostramos un ícono u otro
             data: (isFavorite) => isFavorite
-                ? const Icon(Icons.favorite, color: Colors.red)
-                : const Icon(Icons.favorite_border),
+                ? const Icon(IconlyBold.bookmark, color: Colors.yellow)
+                : const Icon(IconlyLight.bookmark),
             error: (_, __) => throw UnimplementedError(),
             // Mientras se resuelve el Future mostramos un círculo de carga
-            loading: () => const CircularProgressIndicator(),
+            loading: () => SpinPerfect(
+              infinite: true,
+              child: const Icon(
+                Icons.refresh,
+              ),
+            ),
           ),
         ),
       ],
-      flexibleSpace: FlexibleSpaceBar(
-        titlePadding: const EdgeInsets.only(bottom: 0),
-        title: _CustomGradient(
-          gradientBegin: Alignment.topCenter,
-          gradientEnd: Alignment.bottomCenter,
-          stops: const [0.7, 1.0],
-          colors: [
-            Colors.transparent,
-            scaffoldBackgroundColor,
-          ],
-        ),
-        background: Stack(
-          children: [
-            // Imagen
-            SizedBox.expand(
-              child: Image.network(
-                movie.backdropPath,
-                fit: BoxFit.cover,
-                // Controlamos la carga de la imágen
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress != null) return const SizedBox();
-
-                  return FadeIn(child: child);
-                },
-              ),
-            ),
-
-            // Gradiente de icono favoritos
-            const _CustomGradient(
-              gradientBegin: Alignment.topRight,
-              gradientEnd: Alignment.bottomLeft,
-              stops: [0.0, 0.2],
-              colors: [
-                Colors.black54,
-                Colors.transparent,
-              ],
-            ),
-
-            // Gradiente icono de flecha
-            const _CustomGradient(
-              gradientBegin: Alignment.topLeft,
-              stops: [0.0, 0.3],
-              colors: [
-                Colors.black87,
-                Colors.transparent,
-              ],
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

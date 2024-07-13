@@ -63,6 +63,7 @@ class FavoritesViewState extends ConsumerState<FavoritesView> {
         movies: favoriteMovies,
         // Pasamos el método como referencia
         loadNextPage: loadNextPage,
+        showFavoriteButton: true,
       ),
     );
   }

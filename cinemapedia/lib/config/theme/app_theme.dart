@@ -9,6 +9,18 @@ class AppTheme {
         fontFamily: 'Gilroy',
         // Tema de los textos
         textTheme: const TextTheme(
+          displayLarge: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          displayMedium: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          displaySmall: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
           titleLarge: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
