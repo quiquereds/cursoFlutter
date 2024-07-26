@@ -51,7 +51,6 @@ class _CubitCounterView extends StatelessWidget {
         child: BlocBuilder<CounterCubit, CounterState>(
           /// Creamos una condición para que solo se redibuje si el nuevo estado
           /// es diferente del estado anterior
-          buildWhen: (previous, current) => current.counter != previous.counter,
           builder: (context, state) {
             return Text('Counter value: ${state.counter}');
           },
