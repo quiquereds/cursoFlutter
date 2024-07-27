@@ -24,7 +24,19 @@ class HomeScreen extends StatelessWidget {
             onTap: () {
               context.push('/bloc');
             },
-          )
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            child: Divider(),
+          ),
+          ListTile(
+            title: const Text('Forms App'),
+            subtitle: const Text('Otro gestor de estado compuesto'),
+            trailing: const Icon(Icons.arrow_circle_right_outlined),
+            onTap: () {
+              context.push('/bloc');
+            },
+          ),
         ],
       ),
     );
