@@ -30,11 +30,11 @@ class HomeScreen extends StatelessWidget {
             child: Divider(),
           ),
           ListTile(
-            title: const Text('Forms App'),
-            subtitle: const Text('Otro gestor de estado compuesto'),
+            title: const Text('Nuevo usuario'),
+            subtitle: const Text('Manejo de formularios'),
             trailing: const Icon(Icons.arrow_circle_right_outlined),
             onTap: () {
-              context.push('/bloc');
+              context.push('/new-user');
             },
           ),
         ],
