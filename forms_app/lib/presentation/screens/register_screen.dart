@@ -35,6 +35,7 @@ class _RegisterView extends StatelessWidget {
           child: Column(
             children: [
               FlutterLogo(size: 100),
+              SizedBox(height: 20),
               _RegisterForm(),
               SizedBox(height: 20),
             ],
@@ -45,94 +46,48 @@ class _RegisterView extends StatelessWidget {
   }
 }
 
-class _RegisterForm extends StatefulWidget {
+class _RegisterForm extends StatelessWidget {
   const _RegisterForm();
-
-  @override
-  State<_RegisterForm> createState() => _RegisterFormState();
-}
-
-class _RegisterFormState extends State<_RegisterForm> {
-  /// Creamos una llave o controlador del formulario
-  /// Este dará acceso a poder validar todos los campos que esten dentro
-  /// del widget Form
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     // Creamos la referencia al cubit que maneja el estado del formulario
     final registerCubit = context.watch<RegisterCubit>();
+    // Obtenemos el valor del estado actual de los campos
+    final username = registerCubit.state.username;
+    final password = registerCubit.state.password;
+    final email = registerCubit.state.email;
 
     return Form(
-      key: _formKey,
       child: Column(
         children: [
           CustomTextFormField(
             label: 'Nombre de usuario',
             prefixIcon: const Icon(Icons.person),
             // Mandamos a actualizar el estado del cubit
-            onChanged: (value) {
-              registerCubit.usernameChanged(value);
-              // Validamos los cambios en el formulario
-              _formKey.currentState?.validate();
-            },
-            // Creamos las validaciones
-            validator: (value) {
-              if (value == null || value.isEmpty) return 'Campo requerido';
-              if (value.trim().isEmpty) return 'Campo requerido';
-              if (value.length < 6) return 'Más de 6 caracteres';
-
-              return null;
-            },
+            onChanged: registerCubit.usernameChanged,
+            errorMessage: username.errrorMessage,
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 30),
           CustomTextFormField(
             label: 'Correo electrónico',
             prefixIcon: const Icon(Icons.email_rounded),
-            onChanged: (value) {
-              registerCubit.emailChanged(value);
-              // Validamos los cambios en el formulario
-              _formKey.currentState?.validate();
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) return 'Campo requerido';
-              if (value.trim().isEmpty) return 'Campo requerido';
-
-              // Expresión regular para validar correos electrónicos
-              final emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-
-              if (!emailRegExp.hasMatch(value)) return 'Email no es valido';
-
-              return null;
-            },
+            onChanged: registerCubit.emailChanged,
+            errorMessage: email.errrorMessage,
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 30),
           CustomTextFormField(
             label: 'Contraseña',
             obscureText: true,
             prefixIcon: const Icon(Icons.password),
-            onChanged: (value) {
-              registerCubit.passwordChanged(value);
-              // Validamos los cambios en el formulario
-              _formKey.currentState?.validate();
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) return 'Campo requerido';
-              if (value.trim().isEmpty) return 'Campo requerido';
-              if (value.length < 6) return 'Más de 6 caracteres';
-
-              return null;
-            },
+            onChanged: registerCubit.passwordChanged,
+            errorMessage: password.errrorMessage,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 40),
           FilledButton.tonalIcon(
             onPressed: () {
-              // Validamos el formulario
-              final isValid = _formKey.currentState!.validate();
-
+              // Validación y posteo
               registerCubit.onSubmit();
-
-              if (isValid) return;
             },
             icon: const Icon(Icons.save),
             label: const Text('Crear usuario'),
