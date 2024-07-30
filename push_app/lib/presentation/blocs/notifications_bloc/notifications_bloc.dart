@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:push_app/domain/entities/push_message.dart';
 import 'package:push_app/firebase_options.dart';
 
 part 'notifications_event.dart';
@@ -80,12 +83,23 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
 
   //* Método para manejar las notificaciones que se reciben
   void _handleRemoteMessage(RemoteMessage message) {
-    print('Got a message whilst in the foreground!');
-    print('Message data: ${message.data}');
-
     if (message.notification == null) return;
 
-    print('Message also contained a notification: ${message.notification}');
+    // Si la notificacion no es nula, creamos una entidad
+    final notification = PushMessage(
+      // Limpiamos el message id para evitar conflictos con GoRouter
+      messageId:
+          message.messageId?.replaceAll(':', '').replaceAll('%', '') ?? '',
+      title: message.notification!.title ?? '',
+      body: message.notification!.body ?? '',
+      sentDate: message.sentTime ?? DateTime.now(),
+      data: message.data,
+      imageUrl: Platform.isAndroid
+          ? message.notification!.android?.imageUrl
+          : message.notification!.apple?.imageUrl,
+    );
+
+    print(notification.toString());
   }
 
   void _onForegroundMessage() {

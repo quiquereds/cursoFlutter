@@ -4,7 +4,7 @@ class NotificationsState extends Equatable {
   // Atributos del Bloc
   final AuthorizationStatus status;
   // TODO: Crear modelo de notificaciones
-  final List<dynamic> notifications;
+  final List<PushMessage> notifications;
 
   // Constructor con valores inicializados
   const NotificationsState({
@@ -15,7 +15,7 @@ class NotificationsState extends Equatable {
   // Método para emitir un nuevo estado
   copyWith({
     AuthorizationStatus? status,
-    List<dynamic>? notifications,
+    List<PushMessage>? notifications,
   }) =>
 
       /// Devolvemos un nuevo estado con los valores definidos, si son nulos,
