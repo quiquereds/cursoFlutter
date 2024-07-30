@@ -4,7 +4,14 @@ import 'package:push_app/config/router/app_router.dart';
 import 'package:push_app/config/theme/app_theme.dart';
 import 'package:push_app/presentation/blocs/notifications_bloc/notifications_bloc.dart';
 
-void main() {
+void main() async {
+  /// Aseguramos que los widgets estén inicializados para poder
+  /// inicializar la aplicación con Firebase
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Inicializamos Firebase
+  await NotificationsBloc.initializeFCM();
+
   runApp(
     /// Como desde nivel raíz de la aplicación, se van a ocupar determinados
     /// gestores de estado, se envuelve la app desde raíz dentro de un

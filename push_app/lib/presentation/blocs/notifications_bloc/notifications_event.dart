@@ -1,8 +1,13 @@
 part of 'notifications_bloc.dart';
 
-sealed class NotificationsEvent extends Equatable {
+sealed class NotificationsEvent {
   const NotificationsEvent();
+}
 
-  @override
-  List<Object> get props => [];
+// Creamos un evento que se dispare al cambiar el permiso de notificaciones
+class NotificationStatusChanged extends NotificationsEvent {
+  // Solicitamos el estado como argumento
+  final AuthorizationStatus status;
+
+  NotificationStatusChanged(this.status);
 }
