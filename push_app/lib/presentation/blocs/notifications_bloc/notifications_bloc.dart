@@ -7,6 +7,18 @@ import 'package:push_app/firebase_options.dart';
 part 'notifications_event.dart';
 part 'notifications_state.dart';
 
+/// En Flutter >=3.3.0 se añade este decorador para que la operación de
+/// tree-shaking no remueva la función
+@pragma('vm:entry-point')
+
+/// Creamos una función top-level, es decir, fuera de clases que gestione el
+/// recibimiento de background notifications, se va a llamar en el main
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+
+  print("Handling a background message: ${message.messageId}");
+}
+
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   // Instancia de Firebase Messaging
   FirebaseMessaging messaging = FirebaseMessaging.instance;

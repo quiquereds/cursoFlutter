@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:push_app/config/router/app_router.dart';
@@ -8,6 +9,9 @@ void main() async {
   /// Aseguramos que los widgets estén inicializados para poder
   /// inicializar la aplicación con Firebase
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Escuchamos las background notifications con el handler del bloc
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   // Inicializamos Firebase
   await NotificationsBloc.initializeFCM();
