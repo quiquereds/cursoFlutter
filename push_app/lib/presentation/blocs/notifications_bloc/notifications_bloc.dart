@@ -90,7 +90,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   }
 
   //* Método para manejar las notificaciones que se reciben
-  void _handleRemoteMessage(RemoteMessage message) {
+  void handleRemoteMessage(RemoteMessage message) {
     if (message.notification == null) return;
     // Si la notificacion no es nula, creamos una entidad
     final notification = PushMessage(
@@ -113,7 +113,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   void _onForegroundMessage() {
     /// Escuchamos el stream de las notificaciones y pasamos el método que se
     /// encarga de procesarlas
-    FirebaseMessaging.onMessage.listen(_handleRemoteMessage);
+    FirebaseMessaging.onMessage.listen(handleRemoteMessage);
   }
 
   //* Método para manejar y actualizar el estado del permiso
