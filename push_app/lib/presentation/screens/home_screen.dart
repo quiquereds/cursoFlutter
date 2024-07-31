@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:push_app/presentation/blocs/notifications_bloc/notifications_bloc.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -31,10 +32,24 @@ class _HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Creamos una referencia al estado de NotificationsBloc
+    final notifications =
+        context.watch<NotificationsBloc>().state.notifications;
+
     return ListView.builder(
-      itemCount: 0,
+      // TODO 4: Realizar implementación del ListView
+      itemCount: notifications.length,
       itemBuilder: (context, index) {
-        return const ListTile();
+        final notification = notifications[index];
+
+        return ListTile(
+          title: Text(notification.title),
+          subtitle: Text(notification.body),
+          leading: notification.imageUrl != null
+              ? Image.network(notification.imageUrl!)
+              : null,
+          onTap: () => context.push('/push-details/${notification.messageId}'),
+        );
       },
     );
   }

@@ -18,8 +18,6 @@ part 'notifications_state.dart';
 /// recibimiento de background notifications, se va a llamar en el main
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-
-  print("Handling a background message: ${message.messageId}");
 }
 
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
@@ -32,6 +30,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     /// en el archivo notifications_event.dart
 
     on<NotificationStatusChanged>(_notificationStatusChanged);
+    on<NotificationReceived>(_onPushNotificationReceived);
 
     // Verificar permiso
     _initialStatusCheck();
@@ -61,6 +60,15 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     _getFCMToken();
   }
 
+  void _onPushNotificationReceived(
+      NotificationReceived event, Emitter<NotificationsState> emit) {
+    // Actualizamos el estado
+    emit(state.copyWith(
+      // Añadimos la notificacion a la lista y hacemos spread de todas las demas
+      notifications: [event.pushMessage, ...state.notifications],
+    ));
+  }
+
   ///* Método para detectar si el usuario dió consentimiento a las notificaciones
   ///* para sobreescribir el estado inicial (notDetermined)
   void _initialStatusCheck() async {
@@ -84,7 +92,6 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   //* Método para manejar las notificaciones que se reciben
   void _handleRemoteMessage(RemoteMessage message) {
     if (message.notification == null) return;
-
     // Si la notificacion no es nula, creamos una entidad
     final notification = PushMessage(
       // Limpiamos el message id para evitar conflictos con GoRouter
@@ -99,7 +106,8 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
           : message.notification!.apple?.imageUrl,
     );
 
-    print(notification.toString());
+    // Disparamos el evento para actualizar el estado de los mensajes
+    add(NotificationReceived(notification));
   }
 
   void _onForegroundMessage() {
@@ -121,5 +129,18 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     );
     // Disparamos el evento para actualizar el estado
     add(NotificationStatusChanged(settings.authorizationStatus));
+  }
+
+  ///* Método encargado de devolver un PushMessage basado en el id de la notificación
+  PushMessage? getMessageById(String pushMessageId) {
+    // Determinamos si en el estado existe una notificación con el id recibido
+    final exist = state.notifications
+        .any((element) => element.messageId == pushMessageId);
+
+    // Basado en la búsqueda, devolvemos un PushMessage o no
+    if (!exist) return null;
+
+    return state.notifications
+        .firstWhere((element) => element.messageId == pushMessageId);
   }
 }
