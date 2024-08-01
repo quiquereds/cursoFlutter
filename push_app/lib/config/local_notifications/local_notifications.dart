@@ -1,4 +1,5 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:push_app/config/router/app_router.dart';
 
 // Creamos una clase encargada de manejar la lógica de las notificaciones locales
 class LocalNotifications {
@@ -26,7 +27,8 @@ class LocalNotifications {
 
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse: (details) {},
+      // Mandamos a llamar el método que maneja la interacción con la notificación
+      onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
     );
   }
 
@@ -64,5 +66,10 @@ class LocalNotifications {
       notificationDetails,
       payload: data,
     );
+  }
+
+  // Método que maneja la navegación al interactuar con una local notif
+  static void onDidReceiveNotificationResponse(NotificationResponse response) {
+    appRouter.push('/push-details/${response.payload}');
   }
 }
