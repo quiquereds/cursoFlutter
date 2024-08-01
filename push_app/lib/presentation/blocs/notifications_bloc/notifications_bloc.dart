@@ -1,9 +1,9 @@
 import 'dart:io';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:push_app/config/local_notifications/local_notifications.dart';
 import 'package:push_app/domain/entities/push_message.dart';
 import 'package:push_app/firebase_options.dart';
 
@@ -23,6 +23,8 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   // Instancia de Firebase Messaging
   FirebaseMessaging messaging = FirebaseMessaging.instance;
+  // Controller del id del Local Notification
+  int pushNumberId = 0;
 
   // Inicialización del counter bloc con su respectivo estado inicial
   NotificationsBloc() : super(const NotificationsState()) {
@@ -106,6 +108,13 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
           : message.notification!.apple?.imageUrl,
     );
 
+    // Mostramos una notificación local (si el usuario está en la app)
+    LocalNotifications.showLocalNotification(
+      id: ++pushNumberId,
+      title: notification.title,
+      body: notification.body,
+      data: message.data.toString(),
+    );
     // Disparamos el evento para actualizar el estado de los mensajes
     add(NotificationReceived(notification));
   }
@@ -113,11 +122,14 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   void _onForegroundMessage() {
     /// Escuchamos el stream de las notificaciones y pasamos el método que se
     /// encarga de procesarlas
+
     FirebaseMessaging.onMessage.listen(handleRemoteMessage);
   }
 
   //* Método para manejar y actualizar el estado del permiso
+
   void requestPermission() async {
+    // Solicitamos permisos para notificaciones push
     NotificationSettings settings = await messaging.requestPermission(
       alert: true,
       announcement: false,
@@ -127,6 +139,10 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
       provisional: false,
       sound: true,
     );
+
+    // Solicitamos permisos para las notificaciones locales
+    await LocalNotifications.requestPermissionLocalNotifications();
+
     // Disparamos el evento para actualizar el estado
     add(NotificationStatusChanged(settings.authorizationStatus));
   }

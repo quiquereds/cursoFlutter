@@ -1,6 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:push_app/config/local_notifications/local_notifications.dart';
 import 'package:push_app/config/router/app_router.dart';
 import 'package:push_app/config/theme/app_theme.dart';
 import 'package:push_app/presentation/blocs/notifications_bloc/notifications_bloc.dart';
@@ -15,6 +16,8 @@ void main() async {
 
   // Inicializamos Firebase
   await NotificationsBloc.initializeFCM();
+  // Inicializamos las notificaciones locales
+  await LocalNotifications.initLocalNotifications();
 
   runApp(
     /// Como desde nivel raíz de la aplicación, se van a ocupar determinados
