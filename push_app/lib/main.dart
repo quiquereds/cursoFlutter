@@ -27,7 +27,14 @@ void main() async {
     /// sus estados.
     MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => NotificationsBloc()),
+        BlocProvider(
+          create: (_) => NotificationsBloc(
+            // Mandamos los casos de uso necesarios al bloc
+            requestLocalNotificationPermission:
+                LocalNotifications.requestPermissionLocalNotifications,
+            showLocalNotifications: LocalNotifications.showLocalNotification,
+          ),
+        ),
       ],
       child: const MainApp(),
     ),

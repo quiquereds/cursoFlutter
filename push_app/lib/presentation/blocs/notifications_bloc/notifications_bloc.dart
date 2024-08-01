@@ -3,7 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:push_app/config/local_notifications/local_notifications.dart';
 import 'package:push_app/domain/entities/push_message.dart';
 import 'package:push_app/firebase_options.dart';
 
@@ -21,13 +20,25 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
+  // Solicitamos casos de uso
+  final Future<void> Function()? requestLocalNotificationPermission;
+  final void Function({
+    required int id,
+    String? title,
+    String? body,
+    String? data,
+  })? showLocalNotifications;
+
   // Instancia de Firebase Messaging
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   // Controller del id del Local Notification
   int pushNumberId = 0;
 
   // Inicialización del counter bloc con su respectivo estado inicial
-  NotificationsBloc() : super(const NotificationsState()) {
+  NotificationsBloc({
+    this.requestLocalNotificationPermission,
+    this.showLocalNotifications,
+  }) : super(const NotificationsState()) {
     /// Desde aqui empiezan los manejadores de cada uno de los eventos definidos
     /// en el archivo notifications_event.dart
 
@@ -109,12 +120,15 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     );
 
     // Mostramos una notificación local (si el usuario está en la app)
-    LocalNotifications.showLocalNotification(
-      id: ++pushNumberId,
-      title: notification.title,
-      body: notification.body,
-      data: message.data.toString(),
-    );
+    if (showLocalNotifications != null) {
+      showLocalNotifications!(
+        id: ++pushNumberId,
+        title: notification.title,
+        body: notification.body,
+        data: message.data.toString(),
+      );
+    }
+
     // Disparamos el evento para actualizar el estado de los mensajes
     add(NotificationReceived(notification));
   }
@@ -140,8 +154,10 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
       sound: true,
     );
 
-    // Solicitamos permisos para las notificaciones locales
-    await LocalNotifications.requestPermissionLocalNotifications();
+    // Solicitamos permisos para las notificaciones locales si se indicó caso de uso
+    if (requestLocalNotificationPermission != null) {
+      await requestLocalNotificationPermission!();
+    }
 
     // Disparamos el evento para actualizar el estado
     add(NotificationStatusChanged(settings.authorizationStatus));
