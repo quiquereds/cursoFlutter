@@ -31,12 +31,13 @@ class AuthDataSourceImpl extends AuthDataSource {
       return user;
     } on DioException catch (e) {
       if (e.response?.statusCode == 401) {
-        throw WrongCredentials();
+        throw CustomError(
+            e.response?.data['message'] ?? 'Credenciales inválidas');
       }
       if (e.type == DioExceptionType.connectionTimeout) {
-        throw ConnectionTimeout();
+        throw CustomError('Revisar conexión a internet');
       }
-      throw CustomError('Error inesperado', 500);
+      throw Exception();
     } catch (e) {
       throw Exception();
     }
