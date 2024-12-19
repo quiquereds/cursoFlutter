@@ -1,17 +1,31 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:teslo_shop/features/auth/domain/domain.dart';
 import 'package:teslo_shop/features/auth/infrastructure/infrastructure.dart';
+import 'package:teslo_shop/features/shared/shared.dart';
 
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
+  // Implementamos el repositorio de autenticación
   final authRepository = AuthRepositoryImpl();
 
-  return AuthNotifier(authRepository: authRepository);
+  // Implementamos el servicio de almacenamiento de valores clave
+  final keyValueStorageService = KeyValueStorageServiceImpl();
+
+  return AuthNotifier(
+    authRepository: authRepository,
+    keyValueStorageService: keyValueStorageService,
+  );
 });
 
 class AuthNotifier extends StateNotifier<AuthState> {
+  // Atributos de la clase
   final AuthRepository authRepository;
+  final KeyValueStorageService keyValueStorageService;
 
-  AuthNotifier({required this.authRepository}) : super(AuthState());
+  // Constructor de la clase
+  AuthNotifier({
+    required this.authRepository,
+    required this.keyValueStorageService,
+  }) : super(AuthState());
 
   Future<void> loginUser(String email, String password) async {
     try {
@@ -37,8 +51,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   void checkAuthStatus() async {}
 
-  void _setLoggedUser(User user) {
-    // TODO: Guardar el token en el storage
+  void _setLoggedUser(User user) async {
+    // Se guarda el token en el almacenamiento local
+    await keyValueStorageService.setKeyValue('token', user.token);
     state = state.copyWith(
       user: user,
       errorMessage: '',
@@ -47,7 +62,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> logout([String? errorMessage]) async {
-    // TODO: Borrar el token del storage
+    // Se elimina el token del almacenamiento local
+    await keyValueStorageService.removeKey('token');
     state = state.copyWith(
       user: null,
       errorMessage: errorMessage,

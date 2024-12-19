@@ -18,6 +18,7 @@ class AuthDataSourceImpl extends AuthDataSource {
 
   @override
   Future<User> login(String email, String password) async {
+    print('hola');
     try {
       final response = await dio.post(
         '/auth/login',
@@ -30,6 +31,11 @@ class AuthDataSourceImpl extends AuthDataSource {
       final user = UserMapper.userJsonToEntity(response.data);
       return user;
     } on DioException catch (e) {
+      if (e.response?.data['message'] != null) {
+        throw CustomError(
+          e.response?.data['message'],
+        );
+      }
       if (e.response?.statusCode == 401) {
         throw CustomError(
             e.response?.data['message'] ?? 'Credenciales inválidas');

@@ -5,7 +5,8 @@ import 'package:teslo_shop/features/shared/shared.dart';
 
 // * StateNotifierProvider
 final registerFormProvider =
-    StateNotifierProvider<RegisterFormNotifier, RegisterFormState>((ref) {
+    StateNotifierProvider.autoDispose<RegisterFormNotifier, RegisterFormState>(
+        (ref) {
   final registerUserCallback = ref.watch(authProvider.notifier).registerUser;
 
   return RegisterFormNotifier(registerUserCallback: registerUserCallback);
