@@ -24,7 +24,16 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  void registerUser(String email, String password, String fullName) async {}
+  void registerUser(String email, String password, String fullName) async {
+    try {
+      final user = await authRepository.register(email, password, fullName);
+      _setLoggedUser(user);
+    } on CustomError catch (e) {
+      logout(e.message);
+    } catch (e) {
+      logout('Error inesperado');
+    }
+  }
 
   void checkAuthStatus() async {}
 
