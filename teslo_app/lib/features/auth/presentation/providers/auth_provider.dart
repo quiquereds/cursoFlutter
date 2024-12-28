@@ -25,7 +25,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
   AuthNotifier({
     required this.authRepository,
     required this.keyValueStorageService,
-  }) : super(AuthState());
+  }) : super(AuthState()) {
+    checkAuthStatus();
+  }
 
   Future<void> loginUser(String email, String password) async {
     try {
@@ -49,7 +51,23 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  void checkAuthStatus() async {}
+  void checkAuthStatus() async {
+    //* Se verifica si el usuario tiene un token
+    final token = await keyValueStorageService.getValue<String>('token');
+
+    //* Se hace logout si no hay token
+    if (token == null) return logout();
+
+    //* Se verifica si el token es valido
+    try {
+      final user = await authRepository.checkAuthStatus(token);
+      _setLoggedUser(user);
+    } on CustomError catch (e) {
+      logout(e.message);
+    } catch (e) {
+      logout('Error inesperado');
+    }
+  }
 
   void _setLoggedUser(User user) async {
     // Se guarda el token en el almacenamiento local
