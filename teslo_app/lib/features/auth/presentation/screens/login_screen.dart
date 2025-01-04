@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:teslo_shop/features/auth/presentation/providers/auth_provider.dart';
 import 'package:teslo_shop/features/auth/presentation/providers/providers.dart';
 import 'package:teslo_shop/features/shared/shared.dart';
 
@@ -32,7 +31,7 @@ class LoginScreen extends StatelessWidget {
             const SizedBox(height: 80),
 
             Container(
-              height: size.height - 260, // 80 los dos sizebox y 100 el ícono
+              height: size.height - 260, // 80 los dos sizedbox y 100 el ícono
               width: double.infinity,
               decoration: BoxDecoration(
                 color: scaffoldBackgroundColor,
@@ -91,6 +90,8 @@ class _LoginForm extends ConsumerWidget {
             label: 'Contraseña',
             obscureText: true,
             onChanged: ref.read(loginFormProvider.notifier).onPasswordChanged,
+            onFieldSubmitted: (_) =>
+                ref.read(loginFormProvider.notifier).onFormSubmit(),
             errorMessage:
                 loginForm.isFormPosted ? loginForm.password.errorMessage : null,
           ),
