@@ -5,16 +5,16 @@ import 'package:teslo_shop/features/auth/auth.dart';
 import 'package:teslo_shop/features/auth/presentation/providers/providers.dart';
 import 'package:teslo_shop/features/products/products.dart';
 
-final goRouterProvider = Provider<GoRouter>((ref) {
+final goRouterProvider = Provider((ref) {
   final goRouterNotifier = ref.read(goRouterNotifierProvider);
 
   return GoRouter(
-    initialLocation: '/checking',
+    initialLocation: '/splash',
     refreshListenable: goRouterNotifier,
     routes: [
       ///* Primera pantalla
       GoRoute(
-        path: '/checking',
+        path: '/splash',
         builder: (context, state) => const CheckAuthStatusScreen(),
       ),
 
@@ -38,7 +38,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       final isGoingTo = state.matchedLocation;
       final authStatus = goRouterNotifier.authStatus;
 
-      if (isGoingTo == '/checking' && authStatus == AuthStatus.checking) {
+      if (isGoingTo == '/splash' && authStatus == AuthStatus.checking) {
         return null;
       }
       if (authStatus == AuthStatus.notAuthenticated) {
@@ -47,7 +47,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       }
 
       if (authStatus == AuthStatus.authenticated) {
-        if (isGoingTo == '/login' || isGoingTo == '/register') return '/';
+        if (isGoingTo == '/login' ||
+            isGoingTo == '/register' ||
+            isGoingTo == '/splash') {
+          return '/';
+        }
       }
 
       return null;
