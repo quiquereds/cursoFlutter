@@ -7,6 +7,6 @@ class UserMapper {
         fullName: json['fullName'],
         isActive: json['isActive'],
         roles: List<String>.from(json['roles'].map((role) => role)),
-        token: json['token'],
+        token: json['token'] ?? '',
       );
 }
