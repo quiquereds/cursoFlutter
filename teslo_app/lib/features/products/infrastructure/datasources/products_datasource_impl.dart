@@ -39,7 +39,7 @@ class ProductsDatasourceImpl extends ProductsDatasource {
       {int limit = 10, int offset = 0}) async {
     // Realizamos la petición GET a la API
     final response =
-        await dio.get<List>('/api/products?limit=$limit&offset=$offset');
+        await dio.get<List>('/products?limit=$limit&offset=$offset');
 
     // Creamos una lista de productos vacía
     final List<Product> products = [];
