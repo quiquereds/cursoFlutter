@@ -2,19 +2,27 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:teslo_shop/config/config.dart';
 import 'package:teslo_shop/features/products/domain/domain.dart';
+import 'package:teslo_shop/features/products/presentation/providers/providers.dart';
 import 'package:teslo_shop/features/shared/shared.dart';
 
 // Provider para el formulario de producto
 final productFormProvider = StateNotifierProvider.autoDispose
     .family<ProductFormNotifier, ProductFormState, Product>((ref, product) {
+  //final onSubmitCallback = ref.watch(productsRepositoryProvider).createUpdateProduct;
+
+  final onSubmitCallback =
+      ref.watch(productsProvider.notifier).createUpdateProduct;
+
   return ProductFormNotifier(
     product: product,
+    onSubmitCallback: onSubmitCallback,
   );
 });
 
 /// Notifier para el formulario de producto
 class ProductFormNotifier extends StateNotifier<ProductFormState> {
-  final void Function(Map<String, dynamic> productLike)? onSubmitCallback;
+  final Future<bool> Function(Map<String, dynamic> productLike)?
+      onSubmitCallback;
 
   /// Constructor del notifier del formulario de producto
   ProductFormNotifier({
@@ -58,7 +66,11 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
           .toList()
     };
 
-    return true; // TODO
+    try {
+      return await onSubmitCallback!(productLike);
+    } catch (e) {
+      return false;
+    }
   }
 
   /// Método para validar el formulario
