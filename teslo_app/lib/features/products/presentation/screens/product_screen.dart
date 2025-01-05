@@ -22,34 +22,40 @@ class ProductScreen extends ConsumerWidget {
     // Instanciamos el provider de productos
     final productState = ref.watch(productProvider(productId));
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Editar producto'),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.camera_alt_outlined),
-          )
-        ],
-      ),
-      body: productState.isLoading
-          ? FullScreenLoader()
-          : _ProductView(product: productState.product!),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Si el producto es nulo, no hacemos nada
-          if (productState.product == null) return;
+    return GestureDetector(
+      onTap: () {
+        // Ocultamos el teclado al hacer tap en cualquier parte de la pantalla
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Editar producto'),
+          actions: [
+            IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.camera_alt_outlined),
+            )
+          ],
+        ),
+        body: productState.isLoading
+            ? FullScreenLoader()
+            : _ProductView(product: productState.product!),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            // Si el producto es nulo, no hacemos nada
+            if (productState.product == null) return;
 
-          // Enviamos el formulario
-          ref
-              .read(productFormProvider(productState.product!).notifier)
-              .onFormSubmit()
-              .then((value) {
-            if (!value) return;
-            if (context.mounted) showSnackbar(context);
-          });
-        },
-        child: const Icon(Icons.save_as_outlined),
+            // Enviamos el formulario
+            ref
+                .read(productFormProvider(productState.product!).notifier)
+                .onFormSubmit()
+                .then((value) {
+              if (!value) return;
+              if (context.mounted) showSnackbar(context);
+            });
+          },
+          child: const Icon(Icons.save_as_outlined),
+        ),
       ),
     );
   }
@@ -199,6 +205,8 @@ class _SizeSelector extends StatelessWidget {
       }).toList(),
       selected: Set.from(selectedSizes),
       onSelectionChanged: (newSelection) {
+        // Ocultamos el teclado al hacer tap en cualquier parte de la pantalla
+        FocusScope.of(context).unfocus();
         onSizeChanged(List.from(newSelection));
       },
       multiSelectionEnabled: true,
@@ -237,6 +245,8 @@ class _GenderSelector extends StatelessWidget {
         }).toList(),
         selected: {selectedGender},
         onSelectionChanged: (newSelection) {
+          // Ocultamos el teclado al hacer tap en cualquier parte de la pantalla
+          FocusScope.of(context).unfocus();
           onGenderChanged(newSelection.first);
         },
       ),
