@@ -16,7 +16,7 @@ class Stock extends FormzInput<int, StockError> {
 
     if (displayError == StockError.empty) return 'El campo es requerido';
     if (displayError == StockError.value) {
-      return 'El precio no puede ser menor a 0';
+      return 'Tiene que ser un número mayor o igual a 0';
     }
 
     return null;

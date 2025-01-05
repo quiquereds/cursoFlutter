@@ -101,12 +101,14 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
 
   /// Método para cambiar el precio del producto
   void onPriceChanged(String value) {
+    final double price = double.tryParse(value) ?? -1;
+
     state = state.copyWith(
-      price: Price.dirty(double.parse(value)),
+      price: Price.dirty(price),
       isFormValid: Formz.validate([
         Title.dirty(state.title.value),
         Slug.dirty(state.slug.value),
-        Price.dirty(double.parse(value)),
+        Price.dirty(price),
         Stock.dirty(state.inStock.value),
       ]),
     );
@@ -114,13 +116,15 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
 
   /// Método para cambiar el stock del producto
   void onStockChanged(String value) {
+    final int stock = int.tryParse(value) ?? -1;
+
     state = state.copyWith(
-      inStock: Stock.dirty(int.parse(value)),
+      inStock: Stock.dirty(stock),
       isFormValid: Formz.validate([
         Title.dirty(state.title.value),
         Slug.dirty(state.slug.value),
         Price.dirty(state.price.value),
-        Stock.dirty(int.parse(value)),
+        Stock.dirty(stock),
       ]),
     );
   }
