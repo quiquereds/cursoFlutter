@@ -1,5 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:teslo_shop/features/shared/infrastructure/services/key_value_storage.dart';
+import 'package:teslo_shop/features/shared/infrastructure/services/storage/key_value_storage.dart';
 
 /// Creamos una clase que implementa la interfaz [KeyValueStorageService] que
 /// definimos anteriormente. Esta clase se utilizará para interactuar con el
