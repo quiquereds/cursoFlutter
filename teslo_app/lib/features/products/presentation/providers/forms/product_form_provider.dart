@@ -51,7 +51,10 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
     if (onSubmitCallback == null) return false;
 
     final productLike = {
-      'id': state.id,
+      /// Si el id es 'new', entonces se creará un nuevo producto y se envía null
+      /// para cumplir con la validación del backend implementado en el
+      /// datasource. De lo contrario, se envía el id del producto para actualizarlo.
+      'id': (state.id == 'new') ? null : state.id,
       'title': state.title.value,
       'price': state.price.value,
       'description': state.description,
