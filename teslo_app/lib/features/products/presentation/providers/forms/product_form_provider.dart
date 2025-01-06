@@ -88,6 +88,13 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
     );
   }
 
+  /// Método para cambiar las imágenes del producto
+  void updateProductImage(String path) {
+    state = state.copyWith(
+      images: [...state.images, path],
+    );
+  }
+
   /// Método para cambiar el título del producto
   void onTitleChanged(String value) {
     state = state.copyWith(

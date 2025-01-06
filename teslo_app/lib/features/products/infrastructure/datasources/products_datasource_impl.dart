@@ -23,15 +23,67 @@ class ProductsDatasourceImpl extends ProductsDatasource {
           ),
         );
 
+  Future<String> _uploadFile(String path) async {
+    try {
+      // Obtenemos el nombre del archivo con extensión
+      final fileName = path.split('/').last;
+
+      // Creamos un objeto FormData con el archivo a subir
+      final FormData data = FormData.fromMap({
+        // Creamos un objeto MultipartFile con el archivo a subir
+        'file': MultipartFile.fromFileSync(path, filename: fileName),
+      });
+
+      // Realizamos la petición POST a la API
+      final response = await dio.post('/files/product', data: data);
+
+      return response.data['image'];
+    } catch (e) {
+      throw Exception();
+    }
+  }
+
+  /// Método para subir las fotos de un producto a la API
+  Future<List<String>> _uploadPhotos(List<String> photos) async {
+    // Filtramos las fotos que no están subidas a la API
+    final photosToUpload =
+        photos.where((photo) => photo.contains('/')).toList();
+
+    // Filtramos las fotos que ya están subidas a la API
+    final photosToIgnore =
+        photos.where((photo) => !photo.contains('/')).toList();
+
+    // Creamos una lista de trabajos de subida de fotos
+    final List<Future<String>> uploadJob =
+        photosToUpload.map((e) => _uploadFile(e)).toList();
+
+    // Esperamos a que se completen todos los trabajos de subida de fotos
+    final newImages = await Future.wait(uploadJob);
+
+    // Retornamos las fotos que ya estaban subidas a la API y las nuevas fotos subidas
+    return [...photosToIgnore, ...newImages];
+  }
+
   @override
   Future<Product> createUpdateProduct(Map<String, dynamic> productLike) async {
     try {
+      // Obtenemos el id del producto
       final String? productId = productLike['id'];
+
+      // Obtenemos el método HTTP a utilizar
       final String method = productId == null ? 'POST' : 'PATCH';
+
+      // Obtenemos la URL a utilizar
       final String url =
           productId == null ? '/products' : '/products/$productId';
+
+      // Eliminamos el id del producto para evitar errores en la petición
       productLike.remove('id');
 
+      // Reemplazamos las fotos del producto por las fotos subidas a la API
+      productLike['images'] = await _uploadPhotos(productLike['images']);
+
+      // Realizamos la petición POST o PATCH a la API
       final response = await dio.request(
         url,
         data: productLike,
@@ -40,6 +92,7 @@ class ProductsDatasourceImpl extends ProductsDatasource {
         ),
       );
 
+      // Mapeamos el JSON a una entidad de tipo Product
       final product = ProductMapper.jsonToEntity(response.data);
 
       return product;
